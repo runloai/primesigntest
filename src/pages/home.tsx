@@ -199,7 +199,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 md:px-6 py-20 md:py-32">
+        <div className="container relative z-10 mx-auto px-4 md:px-6 py-16 pb-28 md:py-32">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -216,7 +216,7 @@ export default function Home() {
             </motion.div>
             <motion.h1
               variants={fadeInUp}
-              className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-6 tracking-tight"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-6 tracking-tight"
             >
               WE BUILD <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400 text-glow">
@@ -227,7 +227,7 @@ export default function Home() {
             </motion.h1>
             <motion.p
               variants={fadeInUp}
-              className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mb-10 leading-relaxed"
+              className="text-base sm:text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mb-10 leading-relaxed"
             >
               From bold LED boards to precision 3D channel letters. We engineer high-impact signage
               that lights up Bangalore and makes your brand impossible to ignore.
@@ -236,7 +236,7 @@ export default function Home() {
               <Button
                 size="lg"
                 onClick={openQuote}
-                className="h-14 px-8 rounded-full text-lg font-bold uppercase tracking-wide box-glow w-full sm:w-auto group"
+                className="h-12 sm:h-14 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-bold uppercase tracking-wide box-glow w-full sm:w-auto group"
                 data-testid="button-hero-whatsapp"
               >
                 Get a Free Quote
@@ -246,7 +246,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="h-14 px-8 rounded-full text-lg font-bold uppercase tracking-wide bg-white/5 border-white/20 hover:bg-white/10 w-full sm:w-auto"
+                  className="h-12 sm:h-14 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-bold uppercase tracking-wide bg-white/5 border-white/20 hover:bg-white/10 w-full sm:w-auto"
                   data-testid="button-hero-portfolio"
                 >
                   View Our Work
