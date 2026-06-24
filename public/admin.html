@@ -1698,6 +1698,10 @@
               </div>
             </div>
           </div>
+          <div style="padding:16px 0;display:flex;align-items:center;gap:12px">
+            <button class="btn btn-gold" onclick="saveContact()" id="saveContactBtn">💾 Save Contact Changes</button>
+            <div id="saveSlideBar" style="display:none;padding:8px 16px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);border-radius:8px;color:#4ade80;font-size:13px">✅ Changes saved!</div>
+          </div>
         </div>
       </div>
 
@@ -2340,6 +2344,17 @@
       }
     }
     
+    function saveContact() {
+      saveConfig();
+      const bar = document.getElementById("saveSlideBar");
+      bar.style.display = "inline-block";
+      bar.style.animation = "none";
+      bar.offsetHeight;
+      bar.style.animation = "slide-in-right 0.4s ease";
+      setTimeout(() => { bar.style.display = "none"; }, 2500);
+      showToast("Contact info saved", "success");
+    }
+
     function addPhone() {
       if (!config.contact.phones) config.contact.phones = [];
       config.contact.phones.push('');
