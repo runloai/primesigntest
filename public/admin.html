@@ -1616,7 +1616,7 @@
       <div class="nav-tabs-inner">
         <button class="nav-tab active" data-tab="contact" onclick="switchTab('contact')">📞 Contact</button>
         <button class="nav-tab" data-tab="arsenal" onclick="switchTab('arsenal')">🛠️ The Arsenal</button>
-        <button class="nav-tab" data-tab="portfolio" onclick="switchTab('portfolio')">🖼️ Portfolio</button>
+        <button class="nav-tab" data-tab="portfolio" onclick="switchTab('portfolio')">🖼️ Our Work Gallery</button>
         <button class="nav-tab" data-tab="hero" onclick="switchTab('hero')">🎯 Hero Section</button>
         <button class="nav-tab" data-tab="colors" onclick="switchTab('colors')">🎨 Color Scheme</button>
         <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</button>
@@ -1702,6 +1702,10 @@
                 <label class="field-label">Facebook</label>
                 <input type="text" class="field-input" data-path="contact.facebook" placeholder="https://facebook.com/...">
               </div>
+              <div class="field-group">
+                <label class="field-label">🗺️ Google Maps Link</label>
+                <input type="text" class="field-input" data-path="contact.mapsUrl" placeholder="https://maps.google.com/?q=...">
+              </div>
             </div>
           </div>
         </div>
@@ -1732,9 +1736,9 @@
         <div class="section-header">
           <h2 class="section-title">
             <div class="section-title-icon">🖼️</div>
-            Portfolio Gallery
+            Our Work Gallery
           </h2>
-          <p class="section-desc">Showcase your best work with categories and featured selections</p>
+          <p class="section-desc">These images appear in the "REAL INSTALLATIONS" section with All/LED/Glow/Acrylic/Wall/Vehicle filter buttons. Set category and mark one as Featured.</p>
         </div>
         <div class="card mb-4">
           <div class="card-header">
@@ -1963,7 +1967,8 @@
         whatsapp: "+91 6366525253",
         youtube: "https://www.youtube.com/@PrimesignBangalore",
         instagram: "https://www.instagram.com/primesignpvtltd/",
-        facebook: "https://www.facebook.com/primesign.in"
+        facebook: "https://www.facebook.com/primesign.in",
+        mapsUrl: "https://maps.google.com/?q=Primesign+Ramamurthy+Nagar+Bangalore"
       },
       services: [
         {
@@ -3002,12 +3007,18 @@
     }
 
     function resetToDefaults() {
-      if (!confirm('This will reset ALL data to defaults. This cannot be undone. Continue?')) return;
+      const pw = prompt("Enter admin password to reset:");
+      if (pw !== "PRIMESIGNBangalore@2026*#@!2112") {
+        showToast("Wrong password! Reset cancelled.", "error");
+        return;
+      }
+      if (!confirm("⚠️ This will DELETE ALL changes and restore defaults. This CANNOT be undone. Are you sure?")) return;
+      if (!confirm("❗ FINAL WARNING: Click OK to permanently reset all data.")) return;
       config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
       saveConfig();
       populateAllFields();
       renderAllTabs();
-      showToast('All settings reset to defaults', 'success');
+      showToast("All settings reset to defaults", "success");
     }
 
     // ================================================
