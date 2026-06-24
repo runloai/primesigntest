@@ -1638,49 +1638,35 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title"><span class="card-title-icon">📱</span> Phone Numbers</div>
+              <button class="btn btn-cyan btn-sm" onclick="addPhone()">+ Add Phone</button>
             </div>
-            <div class="card-body">
-              <div class="field-group">
-                <label class="field-label">Primary Phone</label>
-                <input type="text" class="field-input" data-path="contact.phone1" placeholder="+91 6366525253">
-              </div>
-              <div class="field-row">
-                <div class="field-group">
-                  <label class="field-label">Secondary Phone</label>
-                  <input type="text" class="field-input" data-path="contact.phone2" placeholder="+91 8861848284">
-                </div>
-                <div class="field-group">
-                  <label class="field-label">Landline</label>
-                  <input type="text" class="field-input" data-path="contact.phone3" placeholder="080 49595599">
-                </div>
-              </div>
+            <div class="card-body" id="phonesContainer">
+              <!-- Phone fields rendered dynamically -->
             </div>
           </div>
 
           <div class="card">
             <div class="card-header">
-              <div class="card-title"><span class="card-title-icon">✉️</span> Email & Messaging</div>
+              <div class="card-title"><span class="card-title-icon">✉️</span> Email Addresses</div>
+              <button class="btn btn-cyan btn-sm" onclick="addEmail()">+ Add Email</button>
             </div>
-            <div class="card-body">
-              <div class="field-group">
-                <label class="field-label">Business Email</label>
-                <input type="text" class="field-input" data-path="contact.email" placeholder="primesign2021@gmail.com">
-              </div>
-              <div class="field-group">
-                <label class="field-label">WhatsApp Number</label>
-                <input type="text" class="field-input" data-path="contact.whatsapp" placeholder="+91 6366525253">
-              </div>
+            <div class="card-body" id="emailsContainer">
+              <!-- Email fields rendered dynamically -->
             </div>
           </div>
 
           <div class="card">
             <div class="card-header">
-              <div class="card-title"><span class="card-title-icon">📍</span> Address</div>
+              <div class="card-title"><span class="card-title-icon">📍</span> Address & WhatsApp</div>
             </div>
             <div class="card-body">
               <div class="field-group">
                 <label class="field-label">Full Address</label>
                 <textarea class="field-textarea" data-path="contact.address" placeholder="Enter your business address"></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label">WhatsApp Number</label>
+                <input type="text" class="field-input" data-path="contact.whatsapp" placeholder="+91 6366525253">
               </div>
             </div>
           </div>
@@ -1701,6 +1687,10 @@
               <div class="field-group">
                 <label class="field-label">Facebook</label>
                 <input type="text" class="field-input" data-path="contact.facebook" placeholder="https://facebook.com/...">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Threads</label>
+                <input type="text" class="field-input" data-path="contact.threadsUrl" placeholder="https://threads.net/...">
               </div>
               <div class="field-group">
                 <label class="field-label">🗺️ Google Maps Link</label>
@@ -1959,15 +1949,14 @@
 
     const DEFAULT_CONFIG = {
       contact: {
-        phone1: "+91 6366525253",
-        phone2: "+91 8861848284",
-        phone3: "080 49595599",
-        email: "primesign2021@gmail.com",
+        phones: ["+91 6366525253", "+91 8861848284", "080 49595599"],
+        emails: ["primesign2021@gmail.com"],
         address: "#35, Ramamurthy Nagar Signal, T C Palya Main Road, Bangalore 560016",
         whatsapp: "+91 6366525253",
         youtube: "https://www.youtube.com/@PrimesignBangalore",
         instagram: "https://www.instagram.com/primesignpvtltd/",
         facebook: "https://www.facebook.com/primesign.in",
+        threadsUrl: "",
         mapsUrl: "https://maps.google.com/?q=Primesign+Ramamurthy+Nagar+Bangalore"
       },
       services: [
@@ -2279,11 +2268,104 @@
     }
 
     function renderAllTabs() {
+      renderContact();
       renderServices();
       renderPortfolio();
       renderHero();
       renderColors();
       renderSettings();
+    }
+
+    // ================================================
+    // CONTACT TAB
+    // ================================================
+    function renderContact() {
+      const phonesContainer = document.getElementById('phonesContainer');
+      const emailsContainer = document.getElementById('emailsContainer');
+      
+      if (phonesContainer) {
+        phonesContainer.innerHTML = '';
+        if (!config.contact.phones || config.contact.phones.length === 0) {
+          config.contact.phones = [''];
+        }
+        config.contact.phones.forEach((phone, index) => {
+          const div = document.createElement('div');
+          div.className = 'field-row';
+          div.innerHTML = `
+            <div class="field-group" style="flex: 1;">
+              <label class="field-label">Phone ${index + 1}</label>
+              <input type="text" class="field-input phone-input" data-index="${index}" placeholder="+91 6366525253" value="${phone}">
+            </div>
+            <button class="btn btn-danger btn-sm" style="margin-top: 20px;" onclick="removePhone(${index})" title="Remove">✕</button>
+          `;
+          phonesContainer.appendChild(div);
+        });
+        
+        // Add change listeners to phone inputs
+        phonesContainer.querySelectorAll('.phone-input').forEach(input => {
+          input.addEventListener('input', (e) => {
+            const idx = parseInt(e.target.dataset.index);
+            config.contact.phones[idx] = e.target.value;
+            updateSaveIndicator(false);
+          });
+        });
+      }
+      
+      if (emailsContainer) {
+        emailsContainer.innerHTML = '';
+        if (!config.contact.emails || config.contact.emails.length === 0) {
+          config.contact.emails = [''];
+        }
+        config.contact.emails.forEach((email, index) => {
+          const div = document.createElement('div');
+          div.className = 'field-row';
+          div.innerHTML = `
+            <div class="field-group" style="flex: 1;">
+              <label class="field-label">Email ${index + 1}</label>
+              <input type="text" class="field-input email-input" data-index="${index}" placeholder="primesign2021@gmail.com" value="${email}">
+            </div>
+            <button class="btn btn-danger btn-sm" style="margin-top: 20px;" onclick="removeEmail(${index})" title="Remove">✕</button>
+          `;
+          emailsContainer.appendChild(div);
+        });
+        
+        // Add change listeners to email inputs
+        emailsContainer.querySelectorAll('.email-input').forEach(input => {
+          input.addEventListener('input', (e) => {
+            const idx = parseInt(e.target.dataset.index);
+            config.contact.emails[idx] = e.target.value;
+            updateSaveIndicator(false);
+          });
+        });
+      }
+    }
+    
+    function addPhone() {
+      if (!config.contact.phones) config.contact.phones = [];
+      config.contact.phones.push('');
+      renderContact();
+      updateSaveIndicator(false);
+    }
+    
+    function removePhone(index) {
+      if (config.contact.phones.length <= 1) return;
+      config.contact.phones.splice(index, 1);
+      renderContact();
+      updateSaveIndicator(false);
+    }
+    
+    function addEmail() {
+      if (!config.contact.emails) config.contact.emails = [];
+      config.contact.emails.push('');
+      renderContact();
+      updateSaveIndicator(false);
+    }
+    
+    function removeEmail(index) {
+      if (config.contact.emails.length <= 1) return;
+      config.contact.emails.splice(index, 1);
+      renderContact();
+      updateSaveIndicator(false);
     }
 
     // ================================================

@@ -1,11 +1,57 @@
 import { Link } from "wouter";
-import { SiWhatsapp, SiYoutube, SiGooglemaps } from "react-icons/si";
+import { SiWhatsapp, SiYoutube, SiInstagram, SiFacebook, SiGooglemaps, SiThreads } from "react-icons/si";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
+
+interface ContactConfig {
+  phones?: string[];
+  emails?: string[];
+  address?: string;
+  whatsapp?: string;
+  youtube?: string;
+  instagram?: string;
+  facebook?: string;
+  threadsUrl?: string;
+  mapsUrl?: string;
+}
+
 const LOGO_URL = "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp";
+
+const DEFAULT_CONTACT: ContactConfig = {
+  phones: ["+91 6366525253", "+91 8861848284"],
+  emails: ["primesign2021@gmail.com"],
+  address: "Bangalore, Karnataka, India",
+  whatsapp: "+91 6366525253",
+  youtube: "https://www.youtube.com/@PrimesignBangalore",
+  instagram: "https://www.instagram.com/primesignpvtltd/",
+  facebook: "https://www.facebook.com/primesign.in",
+  threadsUrl: "",
+  mapsUrl: "https://maps.google.com/?q=Primesign+Ramamurthy+Nagar+Bangalore"
+};
+
+function getContactConfig(): ContactConfig {
+  try {
+    const stored = localStorage.getItem("primesign-config");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.contact || DEFAULT_CONTACT;
+    }
+  } catch {
+    console.warn("Failed to load contact config");
+  }
+  return DEFAULT_CONTACT;
+}
 
 export default function Footer() {
   const [useTextLogo] = useState(() => typeof window !== "undefined" && localStorage.getItem("primesign-logo") === "text");
+  const [contact, setContact] = useState<ContactConfig>(DEFAULT_CONTACT);
+  
+  useEffect(() => {
+    setContact(getContactConfig());
+  }, []);
+
+  const phones = contact.phones?.length ? contact.phones : DEFAULT_CONTACT.phones || [];
+  const emails = contact.emails?.length ? contact.emails : DEFAULT_CONTACT.emails || [];
 
   return (
     <footer className="bg-black border-t border-white/10 pt-20 pb-10">
@@ -24,15 +70,36 @@ export default function Footer() {
               Bangalore's premier signage and branding studio. We build bold, high-impact visual communication that makes your business unforgettable.
             </p>
             <div className="flex gap-4">
-              <a href="https://wa.me/916366525253" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
-                <SiWhatsapp size={20} />
-              </a>
-              <a href="https://www.youtube.com/@PrimesignBangalore" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
-                <SiYoutube size={20} />
-              </a>
-              <a href="https://g.co/kgs/Usqtga" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
-                <SiGooglemaps size={18} />
-              </a>
+              {contact.whatsapp && (
+                <a href={`https://wa.me/${contact.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiWhatsapp size={20} />
+                </a>
+              )}
+              {contact.youtube && (
+                <a href={contact.youtube} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiYoutube size={20} />
+                </a>
+              )}
+              {contact.instagram && (
+                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiInstagram size={20} />
+                </a>
+              )}
+              {contact.facebook && (
+                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiFacebook size={20} />
+                </a>
+              )}
+              {contact.threadsUrl && (
+                <a href={contact.threadsUrl} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiThreads size={20} />
+                </a>
+              )}
+              {contact.mapsUrl && (
+                <a href={contact.mapsUrl} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all">
+                  <SiGooglemaps size={18} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -74,17 +141,26 @@ export default function Footer() {
               <li className="flex items-start gap-3 text-muted-foreground">
                 <Phone className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <a href="tel:+916366525253" className="block hover:text-foreground transition-colors">+91 63665 25253</a>
-                  <a href="tel:+918861848284" className="block hover:text-foreground transition-colors">+91 88618 48284</a>
+                  {phones.map((phone, i) => (
+                    <a key={i} href={`tel:${phone.replace(/\s/g, '')}`} className="block hover:text-foreground transition-colors">
+                      {phone}
+                    </a>
+                  ))}
                 </div>
               </li>
-              <li className="flex items-center gap-3 text-muted-foreground">
-                <Mail className="w-5 h-5 text-primary shrink-0" />
-                <a href="mailto:primesign2021@gmail.com" className="hover:text-foreground transition-colors">primesign2021@gmail.com</a>
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  {emails.map((email, i) => (
+                    <a key={i} href={`mailto:${email}`} className="block hover:text-foreground transition-colors">
+                      {email}
+                    </a>
+                  ))}
+                </div>
               </li>
               <li className="flex items-start gap-3 text-muted-foreground">
                 <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Bangalore, Karnataka, India</span>
+                <span>{contact.address || DEFAULT_CONTACT.address}</span>
               </li>
             </ul>
           </div>
