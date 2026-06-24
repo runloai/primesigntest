@@ -939,9 +939,18 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">Client Feedback</h2>
-            <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight">
+            <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight mb-6">
               TRUSTED BY BANGALORE BUSINESSES
             </h3>
+            <a 
+              href="https://wa.me/916366525253?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20submit%20a%20review%20for%20your%20services." 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+            >
+              <Star className="w-4 h-4" />
+              Add Your Review
+            </a>
           </div>
 
           {/* Carousel Container */}
