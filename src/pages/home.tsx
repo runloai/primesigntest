@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, ChevronRight, PhoneCall, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuoteModal } from "@/context/QuoteModalContext";
+import { PortfolioImage } from "@/components/ui/image-with-skeleton";
 
 // Helper function to read admin config from localStorage
 function getAdminConfig(): { portfolio?: any[]; hero?: any; services?: any[] } | null {

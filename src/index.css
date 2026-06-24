@@ -175,4 +175,77 @@
   .box-glow {
     box-shadow: 0 0 30px hsl(var(--primary) / 0.2);
   }
+
+  /* Image shimmer loading animation */
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Smooth zoom animation for portfolio items */
+  .hover-zoom {
+    transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .group:hover .hover-zoom {
+    transform: scale(1.05);
+  }
+
+  /* Touch target size for mobile - minimum 44px */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Touch-friendly button with proper spacing */
+  .touch-button {
+    @apply min-h-[44px] min-w-[44px] px-4 py-3;
+  }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Ensure all clickable elements are at least 44px on mobile */
+  button:not([disabled]),
+  a:not([disabled]),
+  [role="button"] {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Better tap feedback on mobile */
+  button:active:not([disabled]),
+  a:active:not([disabled]),
+  [role="button"]:active:not([disabled]) {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Portfolio image hover effect disabled on touch devices */
+  @media (hover: none) {
+    .portfolio-item .group-hover\:scale-105 {
+      transform: none !important;
+    }
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .hover-zoom,
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
