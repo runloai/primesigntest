@@ -360,12 +360,11 @@ export default function Home() {
                     {service.desc}
                   </p>
                   <a
-                    href="https://wa.me/c/916366525253"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="#portfolio"
+                    onClick={(e) => { e.preventDefault(); document.querySelector("#portfolio")?.scrollIntoView({behavior:"smooth"}); }}
                     className="inline-flex items-center text-sm font-bold uppercase tracking-wider text-white hover:text-primary transition-colors"
                   >
-                    Explore Catalogue <ChevronRight className="ml-1 w-4 h-4" />
+                    View Past Work <ChevronRight className="ml-1 w-4 h-4" />
                   </a>
                 </div>
               </motion.div>

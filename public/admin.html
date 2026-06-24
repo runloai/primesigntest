@@ -203,12 +203,18 @@ function renderContact(el) {
 }
 
 function renderServices(el) {
-  let html = `<div class="card"><h3>🛠️ Services ("The Arsenal")</h3>`;
+  let html = `<div class="card"><h3>🛠️ Services ("The Arsenal")</h3>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Click the image area to upload. Changes save to browser storage.</p>`;
   config.services.forEach((s, i) => {
-    html += `<div class="service-row">
-      <input value="${esc(s.name)}" data-path="services.${i}.name" placeholder="Service name">
-      <input value="${esc(s.desc)}" data-path="services.${i}.desc" placeholder="Description">
-      <input value="${esc(s.img||'')}" data-path="services.${i}.img" placeholder="Image URL (optional)" style="max-width:200px">
+    html += `<div class="service-row" style="align-items:start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;margin:8px 0">
+      <div class="upload-image-btn" onclick="triggerServiceUpload(${i})" style="width:120px;height:90px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--bg)">
+        ${s.img ? `<img src="${s.img}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='📷'">` : '📷'}
+      </div>
+      <input type="file" id="serviceFile${i}" accept="image/*" onchange="handleServiceImage(${i}, event)" style="display:none">
+      <div style="flex:1">
+        <input value="${esc(s.name)}" data-path="services.${i}.name" placeholder="Service name" style="font-weight:bold">
+        <textarea data-path="services.${i}.desc" placeholder="Description" style="min-height:60px">${esc(s.desc||'')}</textarea>
+      </div>
       <button class="btn btn-red" onclick="deleteService(${i})">✕</button>
     </div>`;
   });
@@ -219,18 +225,17 @@ function renderServices(el) {
 
 function renderPortfolio(el) {
   let html = `<div class="card"><h3>🖼️ Portfolio Images</h3>
-    <div class="image-upload-area" onclick="document.getElementById('fileInput').click()">
-      📁 Click to upload images (auto-converts to WebP)<br><small>Supported: JPG, PNG, GIF, WebP</small>
-    </div>
-    <div class="upload-progress" id="uploadProgress"></div>
-    <input type="file" id="fileInput" accept="image/*" multiple onchange="handleImageUpload(event)" style="display:none">
-    <div id="uploadedPreview"></div>`;
+    <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Images auto-convert to WebP on upload</p>`;
   config.portfolio.forEach((p, i) => {
-    html += `<div class="portfolio-row">
-      <img src="${p.url}" class="preview-img" onerror="this.style.display='none'" alt="">
-      <input value="${esc(p.url)}" data-path="portfolio.${i}.url" placeholder="Image URL">
-      <input value="${esc(p.label)}" data-path="portfolio.${i}.label" placeholder="Label" style="max-width:150px">
-      <input value="${esc(p.category||'')}" data-path="portfolio.${i}.category" placeholder="Category" style="max-width:100px">
+    html += `<div class="portfolio-row" style="align-items:start;gap:12px;padding:10px;border:1px solid var(--border);border-radius:12px;margin:8px 0">
+      <div class="upload-image-btn" onclick="triggerPortfolioUpload(${i})" style="width:120px;height:90px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--bg)">
+        ${p.url ? `<img src="${p.url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='🖼️'">` : '🖼️'}
+      </div>
+      <input type="file" id="portfolioFile${i}" accept="image/*" onchange="handlePortfolioImage(${i}, event)" style="display:none">
+      <div style="flex:1">
+        <input value="${esc(p.label)}" data-path="portfolio.${i}.label" placeholder="Image label" style="font-weight:bold">
+        <input value="${esc(p.category||'')}" data-path="portfolio.${i}.category" placeholder="Category (led/acrylic/glow/wall/vehicle)" style="font-size:12px">
+      </div>
       <button class="btn btn-red" onclick="deletePortfolio(${i})">✕</button>
     </div>`;
   });
@@ -312,22 +317,22 @@ function deletePortfolio(i) {
   if (confirm("Delete this image?")) { config.portfolio.splice(i, 1); renderTab("portfolio"); }
 }
 
-async function handleImageUpload(e) {
-  const files = e.target.files;
-  const progress = document.getElementById("uploadProgress");
-  const preview = document.getElementById("uploadedPreview");
-  progress.style.display = "block";
-  progress.style.width = "0%";
+function triggerServiceUpload(i) { document.getElementById("serviceFile" + i).click(); }
+function triggerPortfolioUpload(i) { document.getElementById("portfolioFile" + i).click(); }
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const webpDataUrl = await convertToWebP(file);
-    config.portfolio.push({ url: webpDataUrl, label: file.name.replace(/\.[^.]+$/, ""), category: "" });
-    progress.style.width = ((i + 1) / files.length * 100) + "%";
-    preview.innerHTML += `<img src="${webpDataUrl}" class="preview-img" style="max-width:80px;max-height:60px">`;
-  }
+async function handleServiceImage(i, e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  config.services[i].img = await convertToWebP(file);
+  saveAll();
+  renderTab("services");
+}
 
-  progress.style.display = "none";
+async function handlePortfolioImage(i, e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  config.portfolio[i].url = await convertToWebP(file);
+  saveAll();
   renderTab("portfolio");
 }
 
