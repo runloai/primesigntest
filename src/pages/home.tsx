@@ -219,7 +219,7 @@ export default function Home() {
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-6 tracking-tight"
             >
               WE BUILD <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-300 text-glow">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow">
                 UNFORGETTABLE
               </span>
               <br />
@@ -524,7 +524,7 @@ export default function Home() {
       </section>
 
       {/* WHY CHOOSE US */}
-      <section id="why-us" className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
+      <section id="why-us" className="py-24 bg-card text-card-foreground relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-50" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
