@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle2, ChevronRight, PhoneCall, Star, X, ZoomIn } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight, PhoneCall, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuoteModal } from "@/context/QuoteModalContext";
 import { PortfolioImage } from "@/components/ui/image-with-skeleton";
@@ -33,7 +33,7 @@ function getAdminConfig(): { portfolio?: any[]; hero?: any; services?: any[]; te
       };
     }
   } catch (e) {
-    console.error("Error reading primesign-config from localStorage:", e);
+    // Silent fail - config not available
   }
   return null;
 }
@@ -238,7 +238,7 @@ function getDynamicTestimonials(): Testimonial[] | null {
       }
     }
   } catch (e) {
-    console.error("Error loading testimonials:", e);
+    // Silent fail - testimonials not available
   }
   return null;
 }
@@ -272,7 +272,7 @@ function getDynamicServices(): any[] | null {
       }
     }
   } catch (e) {
-    console.error("Error loading services:", e);
+    // Silent fail - services not available
   }
   return null;
 }

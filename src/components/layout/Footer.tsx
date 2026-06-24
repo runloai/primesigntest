@@ -37,7 +37,7 @@ function getContactConfig(): ContactConfig {
       return parsed.contact || DEFAULT_CONTACT;
     }
   } catch {
-    console.warn("Failed to load contact config");
+    // Silent fail - contact config not available
   }
   return DEFAULT_CONTACT;
 }

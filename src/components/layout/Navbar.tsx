@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Palette } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useQuoteModal } from "@/context/QuoteModalContext";
 const LOGO_URL = "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp";
 

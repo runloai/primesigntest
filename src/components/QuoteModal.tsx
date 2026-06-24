@@ -37,6 +37,15 @@ const TIMELINES = [
   "Just exploring for now",
 ];
 
+const BUDGET_RANGES = [
+  "Under ₹25,000",
+  "₹25,000 – ₹50,000",
+  "₹50,000 – ₹1,00,000",
+  "₹1,00,000 – ₹2,00,000",
+  "Over ₹2,00,000",
+  "Not sure / Need quote",
+];
+
 export default function QuoteModal() {
   const { isOpen, close } = useQuoteModal();
 
@@ -48,6 +57,7 @@ export default function QuoteModal() {
     businessType: "",
     location: "",
     timeline: "",
+    budget: "",
     details: "",
   });
   const [services, setServices] = useState<string[]>([]);
