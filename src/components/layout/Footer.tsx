@@ -55,10 +55,16 @@ export default function Footer() {
   const emails = contact.emails?.length ? contact.emails : DEFAULT_CONTACT.emails || [];
 
   const handleNavClick = (href: string) => {
-    if (href.startsWith("/#") && location === "/") {
-      const element = document.querySelector(href.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("/#")) {
+      if (location === "/") {
+        // Already on home page, just scroll
+        const element = document.querySelector(href.substring(1));
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // On a different page, navigate to home first then scroll
+        setLocation(href);
       }
     }
   };

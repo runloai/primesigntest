@@ -66,10 +66,17 @@ export default function Navbar() {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
-    if (href.startsWith("/#") && location === "/") {
-      const element = document.querySelector(href.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("/#")) {
+      if (location === "/") {
+        // Already on home page, just scroll
+        const element = document.querySelector(href.substring(1));
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // On a different page, navigate to home first
+        // Note: the Link component will handle the navigation
+        // Return false to let default link behavior work
       }
     }
   };
