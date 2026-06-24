@@ -2178,7 +2178,10 @@
       const result = JSON.parse(JSON.stringify(defaultObj));
       for (const key in savedObj) {
         if (savedObj.hasOwnProperty(key)) {
-          if (typeof savedObj[key] === 'object' && savedObj[key] !== null && !Array.isArray(savedObj[key])) {
+          if (Array.isArray(savedObj[key])) {
+            // Only use saved array if it has items, otherwise keep defaults
+            if (savedObj[key].length > 0) result[key] = savedObj[key];
+          } else if (typeof savedObj[key] === 'object' && savedObj[key] !== null) {
             result[key] = mergeDeep(result[key] || {}, savedObj[key]);
           } else {
             result[key] = savedObj[key];
