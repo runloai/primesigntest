@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQuoteModal } from "@/context/QuoteModalContext";
 
 // Helper function to read admin config from localStorage
-function getAdminConfig(): { portfolio?: any[]; hero?: any } | null {
+function getAdminConfig(): { portfolio?: any[]; hero?: any; services?: any[] } | null {
   try {
     const stored = localStorage.getItem("primesign-config");
     if (stored) {
@@ -14,6 +14,7 @@ function getAdminConfig(): { portfolio?: any[]; hero?: any } | null {
       return {
         portfolio: config.portfolio,
         hero: config.hero,
+        services: config.services,
       };
     }
   } catch (e) {
@@ -225,11 +226,57 @@ function getDynamicTestimonials(): Testimonial[] | null {
   return null;
 }
 
+// Helper to get dynamic services from localStorage
+function getDynamicServices(): any[] | null {
+  try {
+    const stored = localStorage.getItem("primesign-config");
+    if (stored) {
+      const config = JSON.parse(stored);
+      if (config.services && config.services.length > 0) {
+        // Map admin service format to main site format
+        return config.services
+          .filter((s: any) => s.name) // Only include services with names
+          .map((s: any) => ({
+            title: s.name,
+            desc: s.desc || "",
+            // Get first image from images array, or fallback to category-based image
+            img: s.images && s.images.length > 0 
+              ? (typeof s.images[0] === 'string' ? s.images[0] : s.images[0]?.url || IMAGES.led[0])
+              : getServiceImage(s.name),
+            tag: s.badge === "popular" ? "Most Popular" : s.badge === "new" ? "New" : null,
+            category: s.name.toLowerCase().includes("led") ? "led" 
+                    : s.name.toLowerCase().includes("glow") ? "glow"
+                    : s.name.toLowerCase().includes("acrylic") ? "acrylic"
+                    : s.name.toLowerCase().includes("wall") ? "wall"
+                    : s.name.toLowerCase().includes("vehicle") ? "vehicle"
+                    : s.name.toLowerCase().includes("pvc") || s.name.toLowerCase().includes("flex") ? "pvc"
+                    : "led",
+          }));
+      }
+    }
+  } catch (e) {
+    console.error("Error loading services:", e);
+  }
+  return null;
+}
+
+// Helper to get fallback image for service category
+function getServiceImage(serviceName: string): string {
+  const name = serviceName.toLowerCase();
+  if (name.includes("led")) return IMAGES.led[0];
+  if (name.includes("glow")) return IMAGES.glow[0];
+  if (name.includes("acrylic")) return IMAGES.acrylic[0];
+  if (name.includes("wall")) return IMAGES.wall[0];
+  if (name.includes("vehicle")) return IMAGES.vehicle[0];
+  if (name.includes("pvc") || name.includes("flex")) return IMAGES.pvc;
+  return IMAGES.led[0];
+}
+
 export default function Home() {
   const { open: openQuote } = useQuoteModal();
   const [heroIndex, setHeroIndex] = useState(0);
   const [portfolioFilter, setPortfolioFilter] = useState<string | null>(null);
-  const [adminConfig, setAdminConfig] = useState<{ portfolio?: any[]; hero?: any; testimonials?: Testimonial[] } | null>(null);
+  const [adminConfig, setAdminConfig] = useState<{ portfolio?: any[]; hero?: any; testimonials?: Testimonial[]; services?: any[] } | null>(null);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
   // Load admin config from localStorage on mount
@@ -239,6 +286,10 @@ export default function Home() {
       setAdminConfig(config);
     }
   }, []);
+
+  // Get services from config or fallback to hardcoded
+  const dynamicServices = getDynamicServices();
+  const displayServices = dynamicServices || adminConfig?.services || services;
 
   // Get hero data from config or fallback to hardcoded
   const heroBgImage = adminConfig?.hero?.bgImage || IMAGES.portfolio[0];
@@ -447,7 +498,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {services.map((service, index) => (
+            {displayServices.map((service, index) => (
               <motion.div
                 key={service.title}
                 initial={{ opacity: 0, y: 30 }}
@@ -507,11 +558,11 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Category Filter Buttons */}
-          <div className="flex flex-wrap gap-3 mb-10">
-            {["All","LED","Glow","Acrylic","Wall","Vehicle"].map(cat => (
+          {/* Category Filter Buttons - Mobile optimized with horizontal scroll */}
+          <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-10 justify-center md:justify-start">
+            {["All","LED","Glow","Acrylic","Wall","Vehicle","PVC"].map(cat => (
               <button key={cat} onClick={() => setPortfolioFilter(cat === "All" ? null : cat.toLowerCase())}
-                className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                className={`px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider transition-all ${
                   (cat === "All" && !portfolioFilter) || portfolioFilter === cat.toLowerCase()
                     ? "bg-primary text-primary-foreground" : "bg-white/5 text-white/60 hover:bg-white/10"}`}
               >{cat}</button>
@@ -801,17 +852,17 @@ export default function Home() {
               </AnimatePresence>
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Mobile optimized with larger touch targets */}
             <button
               onClick={() => setTestimonialIndex((prev) => (prev - 1 + displayTestimonials.length) % displayTestimonials.length)}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-12 h-12 rounded-full bg-card border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all flex items-center justify-center text-foreground/60 hover:text-primary"
+              className="absolute left-2 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full bg-card border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all flex items-center justify-center text-foreground/60 hover:text-primary touch-manipulation"
               aria-label="Previous testimonial"
             >
               ←
             </button>
             <button
               onClick={() => setTestimonialIndex((prev) => (prev + 1) % displayTestimonials.length)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-12 h-12 rounded-full bg-card border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all flex items-center justify-center text-foreground/60 hover:text-primary"
+              className="absolute right-2 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full bg-card border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all flex items-center justify-center text-foreground/60 hover:text-primary touch-manipulation"
               aria-label="Next testimonial"
             >
               →
