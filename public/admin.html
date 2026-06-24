@@ -1292,6 +1292,11 @@
       box-shadow: 0 0 20px rgba(240, 168, 48, 0.2);
     }
 
+    .portfolio-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-dim), 0 12px 40px rgba(240, 168, 48, 0.3);
+    }
+
     .portfolio-image {
       aspect-ratio: 16/10;
       overflow: hidden;
@@ -2259,9 +2264,19 @@
           <p class="section-desc">These images appear in the "REAL INSTALLATIONS" section with filter buttons. <strong>⭐ The starred "Featured Hero" image appears larger at the top-left of the grid - it anchors your portfolio and draws attention.</strong></p>
         </div>
         <div class="card mb-4">
-          <div class="card-header">
+          <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
             <div class="card-title">Portfolio Items</div>
-            <button class="btn btn-cyan btn-sm" onclick="showAddPortfolioModal()">+ Add Image</button>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <!-- Bulk Actions Bar -->
+              <div id="bulkActionsBar" class="bulk-actions-bar hidden" style="display: flex; gap: 8px; align-items: center; padding: 8px 16px; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border-primary);">
+                <span style="font-size: 14px; color: var(--text-secondary);"><span id="bulkCount">0</span> selected</span>
+                <div style="width: 1px; height: 20px; background: var(--border-primary);"></div>
+                <button class="btn btn-outline btn-sm" onclick="selectAllPortfolio()">Select All</button>
+                <button class="btn btn-outline btn-sm" onclick="clearPortfolioSelection()">Clear</button>
+                <button class="btn btn-danger btn-sm" onclick="bulkDeletePortfolio()">🗑️ Delete Selected</button>
+              </div>
+              <button class="btn btn-cyan btn-sm" onclick="showAddPortfolioModal()">+ Add Image</button>
+            </div>
           </div>
           <div class="card-body">
             <div id="portfolioGrid" class="portfolio-grid"></div>
@@ -3698,6 +3713,68 @@
     // ================================================
     // PORTFOLIO
     // ================================================
+    let selectedPortfolioIds = new Set();
+
+    function updateBulkActionsUI() {
+      const bulkBar = document.getElementById('bulkActionsBar');
+      const bulkCount = document.getElementById('bulkCount');
+      if (!bulkBar || !bulkCount) return;
+      
+      const count = selectedPortfolioIds.size;
+      bulkCount.textContent = count;
+      
+      if (count > 0) {
+        bulkBar.classList.remove('hidden');
+      } else {
+        bulkBar.classList.add('hidden');
+      }
+    }
+
+    function togglePortfolioSelection(id) {
+      if (selectedPortfolioIds.has(id)) {
+        selectedPortfolioIds.delete(id);
+      } else {
+        selectedPortfolioIds.add(id);
+      }
+      updateBulkActionsUI();
+      renderPortfolio();
+    }
+
+    function selectAllPortfolio() {
+      if (!config.portfolio) return;
+      config.portfolio.forEach(item => selectedPortfolioIds.add(item.id));
+      updateBulkActionsUI();
+      renderPortfolio();
+    }
+
+    function clearPortfolioSelection() {
+      selectedPortfolioIds.clear();
+      updateBulkActionsUI();
+      renderPortfolio();
+    }
+
+    function bulkDeletePortfolio() {
+      const count = selectedPortfolioIds.size;
+      if (count === 0) return;
+      
+      showConfirmDialog({
+        title: 'Delete Multiple Items',
+        message: `This will permanently delete ${count} portfolio item${count > 1 ? 's' : ''}. This action cannot be undone.`,
+        icon: '🗑️',
+        type: 'danger',
+        confirmText: `Delete ${count} Item${count > 1 ? 's' : ''}`,
+        confirmClass: 'btn-danger',
+        onConfirm: () => {
+          config.portfolio = config.portfolio.filter(p => !selectedPortfolioIds.has(p.id));
+          selectedPortfolioIds.clear();
+          renderPortfolio();
+          updateBulkActionsUI();
+          updateSaveIndicator(false);
+          showToast(`${count} portfolio item${count > 1 ? 's' : ''} deleted`, 'success');
+        }
+      });
+    }
+
     function renderPortfolio() {
       const container = document.getElementById('portfolioGrid');
       const empty = document.getElementById('portfolioEmpty');
@@ -3714,15 +3791,20 @@
       empty.classList.add('hidden');
 
       container.innerHTML = config.portfolio.map((item, index) => `
-        <div class="portfolio-card ${item.featured ? 'featured' : ''}">
+        <div class="portfolio-card ${item.featured ? 'featured' : ''} ${selectedPortfolioIds.has(item.id) ? 'selected' : ''}">
           <div class="portfolio-image">
+            <div class="portfolio-select-overlay" onclick="togglePortfolioSelection(${item.id})" style="position: absolute; top: 8px; left: 8px; z-index: 10;">
+              <div class="portfolio-checkbox" style="width: 24px; height: 24px; border: 2px solid ${selectedPortfolioIds.has(item.id) ? 'var(--gold)' : 'rgba(255,255,255,0.5)'}; border-radius: 4px; background: ${selectedPortfolioIds.has(item.id) ? 'var(--gold)' : 'rgba(0,0,0,0.5)'}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                ${selectedPortfolioIds.has(item.id) ? '<span style="color: #000; font-size: 14px;">✓</span>' : ''}
+              </div>
+            </div>
             ${item.url
               ? `<img src="${item.url}" alt="${escapeHtml(item.label)}">`
               : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;">🖼️</div>`}
             ${item.featured ? '<div class="portfolio-featured-badge" title="This image appears larger as the hero in portfolio grid">★ Featured Hero</div>' : ''}
             <div class="portfolio-overlay">
-              <button class="btn btn-gold btn-sm" onclick="triggerPortfolioUpload(${item.id})">📁 Change</button>
-              <button class="btn btn-cyan btn-sm" onclick="openCropper('portfolio', event, ${item.id})">✂️ Crop</button>
+              <button class="btn btn-gold btn-sm" onclick="event.stopPropagation(); triggerPortfolioUpload(${item.id})">📁 Change</button>
+              <button class="btn btn-cyan btn-sm" onclick="event.stopPropagation(); openCropper('portfolio', event, ${item.id})">✂️ Crop</button>
               <input type="file" id="portfolioFile-${item.id}" accept="image/*" style="display:none" onchange="handlePortfolioUpload(${item.id}, event)">
             </div>
           </div>
@@ -3745,10 +3827,10 @@
               <button class="btn btn-icon btn-outline btn-sm" onclick="movePortfolio(${item.id}, 1)" ${index === config.portfolio.length - 1 ? 'disabled' : ''}>↓</button>
             </div>
             <div class="flex gap-2">
-              <button class="btn ${item.featured ? 'btn-gold' : 'btn-outline'} btn-sm ${item.featured ? 'featured-active' : ''}" onclick="toggleFeatured(${item.id})" data-tooltip="${item.featured ? 'This is the Featured Hero image - appears larger at the top-left of the grid. Click to un-feature.' : 'Click to make this the Featured Hero image - it will appear larger at the top-left of the portfolio grid'}">
+              <button class="btn ${item.featured ? 'btn-gold' : 'btn-outline'} btn-sm ${item.featured ? 'featured-active' : ''}" onclick="event.stopPropagation(); toggleFeatured(${item.id})" data-tooltip="${item.featured ? 'This is the Featured Hero image - appears larger at the top-left of the grid. Click to un-feature.' : 'Click to make this the Featured Hero image - it will appear larger at the top-left of the portfolio grid'}">
                 ${item.featured ? '★ Featured (Hero Image)' : '☆ Set as Featured Hero'}
               </button>
-              <button class="btn btn-danger btn-sm" onclick="deletePortfolio(${item.id})">🗑️</button>
+              <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deletePortfolio(${item.id})">🗑️</button>
             </div>
           </div>
         </div>
