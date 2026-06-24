@@ -560,7 +560,7 @@ export default function Home() {
 
           {/* Category Filter Buttons - Mobile optimized with horizontal scroll */}
           <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-10 justify-center md:justify-start">
-            {["All","LED","Glow","Acrylic","Wall","Vehicle","PVC"].map(cat => (
+            {["All","LED","Glow","Acrylic","Wall","Vehicle","PVC","Flex"].map(cat => (
               <button key={cat} onClick={() => setPortfolioFilter(cat === "All" ? null : cat.toLowerCase())}
                 className={`px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider transition-all ${
                   (cat === "All" && !portfolioFilter) || portfolioFilter === cat.toLowerCase()
