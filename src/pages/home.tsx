@@ -219,7 +219,7 @@ export default function Home() {
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-6 tracking-tight"
             >
               WE BUILD <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400 text-glow">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-300 text-glow">
                 UNFORGETTABLE
               </span>
               <br />
