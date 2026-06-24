@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { SiWhatsapp, SiYoutube, SiInstagram, SiFacebook, SiGooglemaps, SiThreads } from "react-icons/si";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -45,6 +45,7 @@ function getContactConfig(): ContactConfig {
 export default function Footer() {
   const [useTextLogo] = useState(() => typeof window !== "undefined" && localStorage.getItem("primesign-logo") === "text");
   const [contact, setContact] = useState<ContactConfig>(DEFAULT_CONTACT);
+  const [location, setLocation] = useLocation();
   
   useEffect(() => {
     setContact(getContactConfig());
@@ -52,6 +53,23 @@ export default function Footer() {
 
   const phones = contact.phones?.length ? contact.phones : DEFAULT_CONTACT.phones || [];
   const emails = contact.emails?.length ? contact.emails : DEFAULT_CONTACT.emails || [];
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/#") && location === "/") {
+      const element = document.querySelector(href.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
+  const quickLinks = [
+    { name: "Services", href: "/#services" },
+    { name: "Portfolio", href: "/#portfolio" },
+    { name: "About Us", href: "/#about" },
+    { name: "Why Us", href: "/#why-us" },
+    { name: "Contact", href: "/contact" },
+  ];
 
   return (
     <footer className="bg-black border-t border-white/10 pt-20 pb-10">
@@ -107,18 +125,17 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-display font-bold uppercase tracking-wider mb-6">Quick Links</h4>
             <ul className="space-y-4">
-              <li>
-                <Link href="/#services" className="text-muted-foreground hover:text-primary transition-colors">Our Services</Link>
-              </li>
-              <li>
-                <Link href="/#portfolio" className="text-muted-foreground hover:text-primary transition-colors">Portfolio</Link>
-              </li>
-              <li>
-                <Link href="/#about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link>
-              </li>
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    href={link.href} 
+                    onClick={() => handleNavClick(link.href)}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
