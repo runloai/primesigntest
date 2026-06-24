@@ -166,6 +166,7 @@ const testimonials = [
 export default function Home() {
   const { open: openQuote } = useQuoteModal();
   const [heroIndex, setHeroIndex] = useState(0);
+  const [portfolioFilter, setPortfolioFilter] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -360,11 +361,12 @@ export default function Home() {
                     {service.desc}
                   </p>
                   <a
-                    href="#portfolio"
-                    onClick={(e) => { e.preventDefault(); document.querySelector("#portfolio")?.scrollIntoView({behavior:"smooth"}); }}
+                    href="https://wa.me/c/916366525253"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center text-sm font-bold uppercase tracking-wider text-white hover:text-primary transition-colors"
                   >
-                    View Past Work <ChevronRight className="ml-1 w-4 h-4" />
+                    Explore Catalogue <ChevronRight className="ml-1 w-4 h-4" />
                   </a>
                 </div>
               </motion.div>
@@ -376,7 +378,7 @@ export default function Home() {
       {/* PORTFOLIO */}
       <section id="portfolio" className="py-24 bg-background relative border-t border-white/5">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
             <div className="max-w-2xl">
               <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">Our Work</h2>
               <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight">REAL INSTALLATIONS</h3>
@@ -386,6 +388,17 @@ export default function Home() {
                 Watch on YouTube
               </Button>
             </a>
+          </div>
+
+          {/* Category Filter Buttons */}
+          <div className="flex flex-wrap gap-3 mb-10">
+            {["All","LED","Glow","Acrylic","Wall","Vehicle"].map(cat => (
+              <button key={cat} onClick={() => setPortfolioFilter(cat === "All" ? null : cat.toLowerCase())}
+                className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                  (cat === "All" && !portfolioFilter) || portfolioFilter === cat.toLowerCase()
+                    ? "bg-primary text-primary-foreground" : "bg-white/5 text-white/60 hover:bg-white/10"}`}
+              >{cat}</button>
+            ))}
           </div>
 
           {/* Main masonry-style grid */}
