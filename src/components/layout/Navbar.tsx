@@ -124,22 +124,13 @@ export default function Navbar() {
   const { open } = useQuoteModal();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scheme, setScheme] = useState(() => localStorage.getItem("primesign-scheme") || "Obsidian Gold");
-  const [useTextLogo, setUseTextLogo] = useState(() => {
-    try {
-      const stored = localStorage.getItem("primesign-config");
-      if (stored) {
-        const config = JSON.parse(stored);
-        if (config.settings?.logoType === "text") return true;
-      }
-    } catch(e) {}
-    return localStorage.getItem("primesign-logo") === "text";
-  });
+  const [scheme, setScheme] = useState("Obsidian Gold");
+  const [useTextLogo, setUseTextLogo] = useState(false);
 
-  // Visitors: read logoType from config.json
   useEffect(() => {
     fetch("/config.json").then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
+      if (c.settings?.scheme && COLOR_SCHEMES[c.settings.scheme]) setScheme(c.settings.scheme);
     }).catch(() => {});
   }, []);
   const [location] = useLocation();
@@ -154,7 +145,6 @@ export default function Navbar() {
     root.style.setProperty("--secondary", s.s);
     root.style.setProperty("--background", s.b);
     root.style.setProperty("--foreground", s.f);
-    localStorage.setItem("primesign-scheme", scheme);
   }, [scheme]);
 
   useEffect(() => {

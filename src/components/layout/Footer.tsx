@@ -43,11 +43,14 @@ function getContactConfig(): ContactConfig {
 }
 
 export default function Footer() {
-  const [useTextLogo] = useState(() => typeof window !== "undefined" && localStorage.getItem("primesign-logo") === "text");
+  const [useTextLogo, setUseTextLogo] = useState(false);
   const [contact, setContact] = useState<ContactConfig>(DEFAULT_CONTACT);
   const [location, setLocation] = useLocation();
   
   useEffect(() => {
+    fetch("/config.json").then(r => r.json()).then(c => {
+      if (c.settings?.logoType === "text") setUseTextLogo(true);
+    }).catch(() => {});
     setContact(getContactConfig());
   }, []);
 
