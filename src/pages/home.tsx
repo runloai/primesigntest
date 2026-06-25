@@ -1351,8 +1351,7 @@ export default function Home() {
                 BORN IN BANGALORE.<br />BUILT FOR IMPACT.
               </h3>
               <p className="text-lg text-muted-foreground font-light leading-relaxed mb-6">
-                Founded in 2021, Primesign Private Limited has rapidly become Bangalore's go-to
-                studio for premium signage and architectural branding.
+                {adminConfig?.settings?.aboutDescription || "Founded in 2021, Primesign Private Limited has rapidly become Bangalore's go-to studio for premium signage and architectural branding."}
               </p>
               <p className="text-lg text-muted-foreground font-light leading-relaxed mb-8">
                 We don't just print signs — we engineer visibility. Our obsession with quality
