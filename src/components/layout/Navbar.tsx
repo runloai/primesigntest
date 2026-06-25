@@ -133,12 +133,14 @@ export default function Navbar() {
   const [logoSrc, setLogoSrc] = useState("https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp");
   const [serviceMenu, setServiceMenu] = useState(FALLBACK_SERVICE_MENU);
   const [configContact, setConfigContact] = useState<{ phones?: string[]; emails?: string[]; facebook?: string; instagram?: string; youtube?: string } | null>(null);
+  const [workingHours, setWorkingHours] = useState("Mon-Sat: 9:00 AM - 7:00 PM<br>Sunday: Closed");
 
   useEffect(() => {
     fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
       if (c.settings?.logoUrl) setLogoSrc(c.settings.logoUrl);
       if (c.settings?.scheme && COLOR_SCHEMES[c.settings.scheme]) setScheme(c.settings.scheme);
+      if (c.settings?.workingHours) setWorkingHours(c.settings.workingHours);
       if (c.contact) setConfigContact(c.contact);
       if (c.services && c.services.length > 0) {
         const categoryTitles: Record<string, string> = {
@@ -242,7 +244,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-6">
               <div className="flex items-center gap-2 text-foreground/60">
                 <Clock className="w-3.5 h-3.5 text-primary" />
-                <span>Mon-Sat, 9am-7pm</span>
+                <span dangerouslySetInnerHTML={{ __html: workingHours }} />
               </div>
               <a 
                 href={`tel:${configContact?.phones?.[0]?.replace(/\s/g, '') || '+916366525253'}`} 
@@ -506,7 +508,7 @@ export default function Navbar() {
                   </a>
                   <div className="flex items-center gap-3 text-foreground/70">
                     <Clock className="w-5 h-5 text-primary" />
-                    <span>Mon-Sat, 9am-7pm</span>
+                    <span dangerouslySetInnerHTML={{ __html: workingHours }} />
                   </div>
                 </div>
 

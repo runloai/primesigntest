@@ -1149,8 +1149,22 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [displayTestimonials.length]);
 
-  // Get portfolio items
+  // Get portfolio items — curated portfolio items from config.json take priority
   const getPortfolioItems = () => {
+    // First: use curated portfolio items from config.json (managed in admin "Portfolio" tab)
+    if (adminConfig?.portfolio && adminConfig.portfolio.length > 0) {
+      const validPortfolioItems = adminConfig.portfolio.filter((item: PortfolioConfig) => item.url);
+      if (validPortfolioItems.length > 0) {
+        return validPortfolioItems.map((item: PortfolioConfig) => ({
+          img: item.url,
+          label: item.label || "Installation",
+          cat: item.category || "led",
+          featured: item.featured || false,
+        }));
+      }
+    }
+    
+    // Second: build portfolio items from service images (fallback)
     if (displayServices && displayServices.length > 0) {
       const serviceGalleryItems: { img: string; label: string; cat: string; featured: boolean }[] = [];
       
@@ -1174,17 +1188,6 @@ export default function Home() {
       if (serviceGalleryItems.length > 0) {
         return serviceGalleryItems;
       }
-    }
-    
-    if (adminConfig?.portfolio && adminConfig.portfolio.length > 0) {
-      return adminConfig.portfolio
-        .filter((item: PortfolioConfig) => item.url)
-        .map((item: PortfolioConfig) => ({
-          img: item.url,
-          label: item.label || "Installation",
-          cat: item.category || "led",
-          featured: item.featured || false,
-        }));
     }
     
     return [
