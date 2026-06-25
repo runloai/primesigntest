@@ -3200,6 +3200,9 @@
         updateSaveIndicator(true);
         showSaveProgress('saved');
         showToast('All changes saved successfully', 'success');
+        
+        // Auto-publish after save
+        await publishConfig();
       } catch (err) {
         showSaveProgress('');
         showToast('Failed to save changes', 'error');
