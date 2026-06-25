@@ -130,64 +130,13 @@ function getEffectiveConfigSync(): { portfolio?: PortfolioConfig[]; hero?: any; 
 // Fetch config on module load (silent - doesn't block rendering)
 fetchSharedConfig().catch(() => {});
 
-const BASE = "https://raw.githubusercontent.com/runloai/PrimeSign/main/data";
-
 const HERO_SLIDES = [
-  `${BASE}/portfolio/01.webp`,
-  `${BASE}/portfolio/03.webp`,
-  `${BASE}/portfolio/04.webp`,
-  `${BASE}/portfolio/05.webp`,
-  `${BASE}/portfolio/06.webp`,
+  "/images/portfolio/01.webp",
+  "/images/portfolio/03.webp",
+  "/images/portfolio/04.webp",
+  "/images/portfolio/05.webp",
+  "/images/portfolio/06.webp",
 ];
-
-const IMAGES = {
-  hero: `${BASE}/portfolio/01.webp`,
-  glow: Array.from({ length: 10 }, (_, i) => `${BASE}/glow/${i + 1}.webp`),
-  led: Array.from({ length: 5 }, (_, i) => `${BASE}/led/${i + 1}.webp`),
-  acrylic: Array.from({ length: 4 }, (_, i) => `${BASE}/acrylic/${i + 1}.webp`),
-  vehicle: Array.from({ length: 11 }, (_, i) => `${BASE}/vehicle/${i + 1}.webp`),
-  wall: Array.from({ length: 11 }, (_, i) => `${BASE}/wall/${i + 1}.webp`),
-  square: [
-    `${BASE}/square/1.webp`,
-    `${BASE}/square/2.webp`,
-    `${BASE}/square/3.webp`,
-    `${BASE}/square/4.webp`,
-    `${BASE}/square/5.webp`,
-    `${BASE}/square/6.webp`,
-    `${BASE}/square/7.webp`,
-    `${BASE}/square/8.webp`,
-    `${BASE}/square/brass.webp`,
-    `${BASE}/square/bus.webp`,
-    `${BASE}/square/ledsign.webp`,
-    `${BASE}/square/resort-square.webp`,
-    `${BASE}/square/resto-square.webp`,
-    `${BASE}/square/spa-square.webp`,
-  ],
-  pvc: `${BASE}/pvc/1.webp`,
-  portfolio: [
-    `${BASE}/portfolio/01.webp`,
-    `${BASE}/portfolio/03.webp`,
-    `${BASE}/portfolio/04.webp`,
-    `${BASE}/portfolio/05.webp`,
-    `${BASE}/portfolio/06.webp`,
-    `${BASE}/portfolio/07.webp`,
-    `${BASE}/portfolio/003.webp`,
-    `${BASE}/portfolio/004.webp`,
-    `${BASE}/portfolio/005.webp`,
-    `${BASE}/portfolio/006.webp`,
-    `${BASE}/portfolio/007.webp`,
-    `${BASE}/portfolio/008.webp`,
-    `${BASE}/portfolio/009.webp`,
-    `${BASE}/portfolio/010.webp`,
-    `${BASE}/portfolio/011.webp`,
-    `${BASE}/portfolio/012.webp`,
-    `${BASE}/portfolio/013.webp`,
-    `${BASE}/portfolio/3.webp`,
-    `${BASE}/portfolio/4.webp`,
-    `${BASE}/portfolio/7.webp`,
-  ],
-  clients: Array.from({ length: 10 }, (_, i) => `${BASE}/clients/${i + 1}.webp`),
-};
 
 // ============ EXPANDED SERVICES (4 CATEGORIES, 20+ SERVICES) ============
 const SERVICES_CATEGORIES = [
