@@ -2155,7 +2155,8 @@
     <!-- Tabs -->
     <nav class="nav-tabs">
       <div class="nav-tabs-inner">
-        <button class="nav-tab active" data-tab="contact" onclick="switchTab('contact')">📞 Contact</button>
+        <button class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        <button class="nav-tab" data-tab="contact" onclick="switchTab('contact')">📞 Contact</button>
         <button class="nav-tab" data-tab="arsenal" onclick="switchTab('arsenal')">🛠️ The Arsenal</button>
         <button class="nav-tab" data-tab="portfolio" onclick="switchTab('portfolio')">🖼️ Our Work Gallery</button>
         <button class="nav-tab" data-tab="reviews" onclick="switchTab('reviews')">⭐ Reviews</button>
@@ -2169,8 +2170,39 @@
 
     <!-- Content -->
     <main class="content">
+      <!-- Dashboard Tab -->
+      <div class="tab-content" id="tab-dashboard">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon">📊</div>
+            Dashboard
+          </h2>
+          <p class="section-desc">Overview of your PrimeSign admin panel</p>
+        </div>
+        <div id="dashboardContent">
+          <div class="card-grid" id="dashboardStats"></div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚡ Quick Actions</div>
+            </div>
+            <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button class="btn btn-gold" onclick="saveConfig()">💾 Save All</button>
+              <button class="btn btn-cyan" onclick="publishConfig()">🌍 Publish</button>
+              <button class="btn btn-outline" onclick="exportData()">📤 Export Backup</button>
+              <a href="/" class="btn btn-outline" target="_blank">🌐 View Site</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">ℹ️ Company Info</div>
+            </div>
+            <div class="card-body" id="dashboardInfo"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Contact Tab -->
-      <div class="tab-content active" id="tab-contact">
+      <div class="tab-content" id="tab-contact">
         <div class="section-header">
           <h2 class="section-title">
             <div class="section-title-icon">📞</div>
@@ -2537,6 +2569,19 @@
                     <div class="toggle-thumb"></div>
                   </div>
                   <span class="toggle-label">Text</span>
+                </div>
+              </div>
+              <div class="field-group" id="logoUploadGroup">
+                <label class="field-label">Logo Image</label>
+                <div class="upload-zone" id="logoUpload" style="max-width:300px;" onclick="document.getElementById('logoFile').click()">
+                  <input type="file" class="upload-zone-input" id="logoFile" accept="image/*" onchange="handleLogoUpload(event)">
+                  <div class="upload-icon" id="logoIcon">🏷️</div>
+                  <div class="upload-title" id="logoTitle">Click to upload logo</div>
+                  <div class="upload-subtitle" id="logoSubtitle">Max 2MB. PNG, WebP</div>
+                  <img class="upload-preview hidden" id="logoPreview" style="aspect-ratio:auto;max-height:120px;">
+                  <div class="upload-overlay-actions">
+                    <button class="btn btn-danger btn-sm" onclick="removeLogo(event)">🗑️ Remove</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2907,7 +2952,13 @@
           desc: "Illuminated glow sign boards that attract attention day and night",
           badge: "",
           category: "sign-boards",
-          images: []
+          images: [
+            { url: "/images/glow/1.webp", label: "Glow Sign Board - Image 1" },
+            { url: "/images/glow/2.webp", label: "Glow Sign Board - Image 2" },
+            { url: "/images/glow/3.webp", label: "Glow Sign Board - Image 3" },
+            { url: "/images/glow/4.webp", label: "Glow Sign Board - Image 4" },
+            { url: "/images/glow/5.webp", label: "Glow Sign Board - Image 5" }
+          ]
         },
         {
           id: 10,
@@ -2915,7 +2966,12 @@
           desc: "High-gloss acrylic sign boards with laser-cut precision",
           badge: "",
           category: "sign-boards",
-          images: []
+          images: [
+            { url: "/images/acrylic/1.webp", label: "Acrylic Sign Board - Image 1" },
+            { url: "/images/acrylic/2.webp", label: "Acrylic Sign Board - Image 2" },
+            { url: "/images/acrylic/3.webp", label: "Acrylic Sign Board - Image 3" },
+            { url: "/images/acrylic/4.webp", label: "Acrylic Sign Board - Image 4" }
+          ]
         },
         {
           id: 11,
@@ -2923,7 +2979,14 @@
           desc: "PVC and stainless steel letter signs for modern corporate branding",
           badge: "",
           category: "sign-boards",
-          images: []
+          images: [
+            { url: "/images/services/sign-boards/pvc-ss-1.png", label: "PVC/SS Letter Sign - Image 1" },
+            { url: "/images/services/sign-boards/pvc-ss-2.png", label: "PVC/SS Letter Sign - Image 2" },
+            { url: "/images/services/sign-boards/pvc-ss-3.png", label: "PVC/SS Letter Sign - Image 3" },
+            { url: "/images/services/sign-boards/pvc-ss-4.png", label: "PVC/SS Letter Sign - Image 4" },
+            { url: "/images/services/sign-boards/pvc-ss-5.png", label: "PVC/SS Letter Sign - Image 5" },
+            { url: "/images/services/sign-boards/pvc-ss-6.png", label: "PVC/SS Letter Sign - Image 6" }
+          ]
         },
         {
           id: 12,
@@ -2943,7 +3006,11 @@
           desc: "Perforated window films for see-through branding on glass surfaces",
           badge: "",
           category: "graphics",
-          images: []
+          images: [
+            { url: "/images/wall/1.webp", label: "One Way Vision - Image 1" },
+            { url: "/images/wall/2.webp", label: "One Way Vision - Image 2" },
+            { url: "/images/wall/3.webp", label: "One Way Vision - Image 3" }
+          ]
         },
         {
           id: 14,
@@ -2951,7 +3018,11 @@
           desc: "High-gloss vinyl branding for a premium polished finish",
           badge: "",
           category: "graphics",
-          images: []
+          images: [
+            { url: "/images/wall/4.webp", label: "Gloss Branding - Image 1" },
+            { url: "/images/wall/5.webp", label: "Gloss Branding - Image 2" },
+            { url: "/images/square/1.webp", label: "Gloss Branding - Image 3" }
+          ]
         },
         {
           id: 15,
@@ -2972,7 +3043,12 @@
           desc: "Custom branded promotional tents for events and outdoor campaigns",
           badge: "",
           category: "promotional",
-          images: []
+          images: [
+            { url: "/images/services/promotional/tent-1.png", label: "Promotional Tents - Image 1" },
+            { url: "/images/services/promotional/tent-2.png", label: "Promotional Tents - Image 2" },
+            { url: "/images/services/promotional/tent-3.png", label: "Promotional Tents - Image 3" },
+            { url: "/images/services/promotional/tent-4.png", label: "Promotional Tents - Image 4" }
+          ]
         },
         {
           id: 17,
@@ -2980,7 +3056,13 @@
           desc: "Portable roll-up banner stands for indoor events and promotions",
           badge: "",
           category: "promotional",
-          images: []
+          images: [
+            { url: "/images/services/promotional/rollup-1.png", label: "Roll Up Standees - Image 1" },
+            { url: "/images/services/promotional/rollup-2.png", label: "Roll Up Standees - Image 2" },
+            { url: "/images/services/promotional/rollup-3.png", label: "Roll Up Standees - Image 3" },
+            { url: "/images/services/promotional/rollup-4.png", label: "Roll Up Standees - Image 4" },
+            { url: "/images/services/promotional/rollup-5.png", label: "Roll Up Standees - Image 5" }
+          ]
         },
         {
           id: 18,
@@ -2988,7 +3070,11 @@
           desc: "High-quality poster printing for indoor and outdoor advertising",
           badge: "",
           category: "print",
-          images: []
+          images: [
+            { url: "/images/01.jpg", label: "Posters - Image 1" },
+            { url: "/images/02.jpg", label: "Posters - Image 2" },
+            { url: "/images/003.jpg", label: "Posters - Image 3" }
+          ]
         },
         {
           id: 19,
@@ -2996,7 +3082,11 @@
           desc: "Premium visiting card printing on multiple paper stocks and finishes",
           badge: "",
           category: "print",
-          images: []
+          images: [
+            { url: "/images/004.jpg", label: "Visiting Cards - Image 1" },
+            { url: "/images/005.jpg", label: "Visiting Cards - Image 2" },
+            { url: "/images/square/brass.webp", label: "Visiting Cards - Image 3" }
+          ]
         },
         {
           id: 20,
@@ -3004,7 +3094,11 @@
           desc: "Custom ID card printing with lamination and accessories",
           badge: "",
           category: "print",
-          images: []
+          images: [
+            { url: "/images/portfolio/01.webp", label: "ID Cards - Image 1" },
+            { url: "/images/portfolio/03.webp", label: "ID Cards - Image 2" },
+            { url: "/images/portfolio/04.webp", label: "ID Cards - Image 3" }
+          ]
         },
         {
           id: 21,
@@ -3012,7 +3106,11 @@
           desc: "Custom t-shirt printing with screen and DTF transfer methods",
           badge: "",
           category: "apparel",
-          images: []
+          images: [
+            { url: "/images/square/7.webp", label: "T-Shirts - Image 1" },
+            { url: "/images/square/8.webp", label: "T-Shirts - Image 2" },
+            { url: "/images/hero-yt.webp", label: "T-Shirts - Image 3" }
+          ]
         },
         {
           id: 22,
@@ -3020,7 +3118,11 @@
           desc: "Fast turnaround digital printing for brochures, flyers and documents",
           badge: "",
           category: "print",
-          images: []
+          images: [
+            { url: "/images/portfolio/05.webp", label: "Quick Printing - Image 1" },
+            { url: "/images/portfolio/06.webp", label: "Quick Printing - Image 2" },
+            { url: "/images/portfolio/07.webp", label: "Quick Printing - Image 3" }
+          ]
         }
       ],
       portfolio: [
@@ -3115,9 +3217,14 @@
       },
       settings: {
         logoType: "image",
+        logoUrl: "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp",
         scheme: "Obsidian Gold",
         whatsappNumber: "+91 6366525253",
-        whatsappMessage: "Hi Primesign! I want to share a file for my signage project."
+        whatsappMessage: "Hi Primesign! I want to share a file for my signage project.",
+        workingHours: "Mon - Sat: 9:00 AM - 7:00 PM<br>Sunday: Closed",
+        aboutDescription: "Founded in 2021, Primesign Private Limited has rapidly become Bangalore's go-to studio for premium signage and architectural branding. We don't just print signs \u2014 we engineer visibility.",
+        helpText: "Ready to transform your brand visibility? Let's discuss your project.",
+        mapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.8865401047!2d77.46612999155236!3d12.953945337580189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4a3e!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1703123456789!5m2!1sen!2sin"
       }
     };
 
@@ -3274,6 +3381,9 @@
 
     function renderTab(tabName) {
       switch (tabName) {
+        case 'dashboard':
+          renderDashboard();
+          break;
         case 'arsenal':
           renderCategories();
           renderServices();
@@ -3303,6 +3413,7 @@
     }
 
     function renderAllTabs() {
+      renderDashboard();
       renderContact();
       renderServices();
       renderPortfolio();
@@ -3312,6 +3423,97 @@
       renderAdvantageImages();
       renderColors();
       renderSettings();
+    }
+
+    // ================================================
+    // DASHBOARD TAB
+    // ================================================
+    function renderDashboard() {
+      renderDashboardStats();
+      renderInfo();
+    }
+
+    function renderDashboardStats() {
+      const container = document.getElementById('dashboardStats');
+      if (!container) return;
+
+      const totalServices = (config.services || []).length;
+      let totalServiceImages = 0;
+      (config.services || []).forEach(s => {
+        totalServiceImages += (s.images || []).length;
+      });
+      const totalPortfolio = (config.portfolio || []).length;
+      const totalTestimonials = (config.testimonials || []).length;
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-body" style="text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">🛠️</div>
+            <div style="font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;">${totalServices}</div>
+            <div style="color:var(--text-secondary);font-size:14px;">Services</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">🖼️</div>
+            <div style="font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;">${totalServiceImages}</div>
+            <div style="color:var(--text-secondary);font-size:14px;">Service Images</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+            <div style="font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;">${totalPortfolio}</div>
+            <div style="color:var(--text-secondary);font-size:14px;">Portfolio Items</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">⭐</div>
+            <div style="font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;">${totalTestimonials}</div>
+            <div style="color:var(--text-secondary);font-size:14px;">Testimonials</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInfo() {
+      const container = document.getElementById('dashboardInfo');
+      if (!container) return;
+
+      const c = config.contact || {};
+      const phones = c.phones || [];
+      const emails = c.emails || [];
+      const scheme = localStorage.getItem(SCHEME_KEY) || config.settings?.scheme || 'Obsidian Gold';
+
+      container.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Business Name</div>
+            <div style="font-weight:600;">PrimeSign Private Limited</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Phone Numbers</div>
+            <div style="font-weight:600;">${phones.join(', ') || 'Not set'}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Email Addresses</div>
+            <div style="font-weight:600;">${emails.join(', ') || 'Not set'}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Address</div>
+            <div style="font-weight:600;">${c.address || 'Not set'}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Color Scheme</div>
+            <div style="font-weight:600;">${scheme}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Hero Headline</div>
+            <div style="font-weight:600;font-size:14px;">${config.hero?.headline?.replace(/<br\s*\/?>/gi, ' ') || 'Not set'}</div>
+          </div>
+        </div>
+      `;
     }
 
     // ================================================
@@ -4961,7 +5163,59 @@
         toggle.classList.remove('active');
       }
 
+      renderLogoPreview();
       renderHeroStats();
+    }
+
+    function renderLogoPreview() {
+      const uploadZone = document.getElementById('logoUpload');
+      const preview = document.getElementById('logoPreview');
+      const icon = document.getElementById('logoIcon');
+      const title = document.getElementById('logoTitle');
+      const subtitle = document.getElementById('logoSubtitle');
+      if (!uploadZone || !preview) return;
+
+      const logoUrl = config.settings.logoUrl || '';
+      if (logoUrl) {
+        uploadZone.classList.add('has-image');
+        preview.src = logoUrl;
+        preview.classList.remove('hidden');
+        if (icon) icon.classList.add('hidden');
+        if (title) title.classList.add('hidden');
+        if (subtitle) subtitle.classList.add('hidden');
+      } else {
+        uploadZone.classList.remove('has-image');
+        preview.classList.add('hidden');
+        if (icon) icon.classList.remove('hidden');
+        if (title) title.classList.remove('hidden');
+        if (subtitle) subtitle.classList.remove('hidden');
+      }
+    }
+
+    async function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('File too large. Max 5MB.', 'error');
+        return;
+      }
+      try {
+        const dataUrl = await fileToDataUrl(file);
+        config.settings.logoUrl = await convertToWebP(dataUrl, 0.9, 400);
+        renderLogoPreview();
+        updateSaveIndicator(false);
+        showToast('Logo uploaded', 'success');
+      } catch (err) {
+        showToast('Failed to process logo', 'error');
+      }
+    }
+
+    function removeLogo(event) {
+      if (event) event.stopPropagation();
+      config.settings.logoUrl = '';
+      renderLogoPreview();
+      updateSaveIndicator(false);
+      showToast('Logo removed', 'success');
     }
 
     function toggleLogoType() {

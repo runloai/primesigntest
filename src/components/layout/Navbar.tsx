@@ -3,7 +3,6 @@ import { Link, useLocation } from "wouter";
 import { Menu, X, ChevronDown, Clock, Phone, Mail, Facebook, Instagram, Youtube } from "lucide-react";
 import { useQuoteModal } from "@/context/QuoteModalContext";
 
-const LOGO_URL = "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp";
 const WHATSAPP_NUMBER = "916366525253";
 const WHATSAPP_MESSAGE = "Hello%20PrimeSign%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services";
 
@@ -131,11 +130,13 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scheme, setScheme] = useState("Obsidian Gold");
   const [useTextLogo, setUseTextLogo] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp");
   const [serviceMenu, setServiceMenu] = useState(FALLBACK_SERVICE_MENU);
 
   useEffect(() => {
     fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
+      if (c.settings?.logoUrl) setLogoSrc(c.settings.logoUrl);
       if (c.settings?.scheme && COLOR_SCHEMES[c.settings.scheme]) setScheme(c.settings.scheme);
       if (c.services && c.services.length > 0) {
         const categoryTitles: Record<string, string> = {
@@ -308,7 +309,7 @@ export default function Navbar() {
                 <span className="text-primary">PRIME</span><span className="text-foreground">SIGN</span>
               </span>
             ) : (
-              <img src={LOGO_URL} alt="Primesign Logo" className="h-8 md:h-10 w-auto object-contain" />
+              <img src={logoSrc} alt="Primesign Logo" className="h-8 md:h-10 w-auto object-contain" />
             )}
           </Link>
 

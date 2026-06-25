@@ -845,6 +845,7 @@
   ],
   "settings": {
     "logoType": "image",
+    "logoUrl": "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp",
     "scheme": "Obsidian Gold",
     "whatsappNumber": "+91 6366525253",
     "whatsappMessage": "Hi Primesign! I want to share a file for my signage project."

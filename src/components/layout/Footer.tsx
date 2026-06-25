@@ -15,8 +15,6 @@ interface ContactConfig {
   mapsUrl?: string;
 }
 
-const LOGO_URL = "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp";
-
 const DEFAULT_CONTACT: ContactConfig = {
   phones: ["+91 6366525253", "+91 8861848284"],
   emails: ["primesign2021@gmail.com"],
@@ -44,12 +42,14 @@ function getContactConfig(): ContactConfig {
 
 export default function Footer() {
   const [useTextLogo, setUseTextLogo] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp");
   const [contact, setContact] = useState<ContactConfig>(DEFAULT_CONTACT);
   const [location, setLocation] = useLocation();
   
   useEffect(() => {
     fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
+      if (c.settings?.logoUrl) setLogoSrc(c.settings.logoUrl);
     }).catch(() => {});
     setContact(getContactConfig());
   }, []);
@@ -91,7 +91,7 @@ export default function Footer() {
                 <span className="text-primary">PRIME</span><span className="text-foreground">SIGN</span>
               </span>
             ) : (
-              <img src={LOGO_URL} alt="Primesign" className="h-10 w-auto" />
+              <img src={logoSrc} alt="Primesign" className="h-10 w-auto" />
             )}
             <p className="text-muted-foreground font-light leading-relaxed max-w-xs">
               Bangalore's premier signage and branding studio. We build bold, high-impact visual communication that makes your business unforgettable.

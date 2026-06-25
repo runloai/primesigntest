@@ -785,7 +785,7 @@ function ClientLogosCarousel({ prefersReducedMotion }: { prefersReducedMotion: b
 }
 
 // Contact Form Component
-function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
+function ContactSection({ prefersReducedMotion, adminConfig }: { prefersReducedMotion: boolean; adminConfig?: any }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -812,7 +812,8 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
       file ? `\n*Attachment:* ${file.name}` : null,
     ].filter(Boolean).join("\n");
 
-    const url = `https://wa.me/916366525253?text=${encodeURIComponent(lines)}`;
+    const waNumber = (adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "916366525253").replace(/[^\d]/g, '');
+    const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines)}`;
     window.open(url, "_blank");
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
@@ -835,7 +836,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
           <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">Contact Us</h2>
           <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight">GET IN TOUCH</h3>
           <p className="text-muted-foreground mt-4 text-lg">
-            Ready to transform your brand visibility? Let's discuss your project.
+            {adminConfig?.settings?.helpText || "Ready to transform your brand visibility? Let's discuss your project."}
           </p>
         </div>
 
@@ -961,7 +962,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
                     Send via WhatsApp
                   </Button>
                   <a
-                    href="https://wa.me/916366525253?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20know%20more%20about%20your%20services."
+                    href={`https://wa.me/${(adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "916366525253").replace(/[^\d]/g, '')}?text=${encodeURIComponent(adminConfig?.settings?.whatsappMessage || "Hello PrimeSign, I'd like to know more about your services.")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1"
@@ -995,17 +996,17 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
                 <MapPin className="w-8 h-8 text-primary mb-4" />
                 <h4 className="font-bold text-lg mb-2">Visit Us</h4>
                 <p className="text-muted-foreground text-sm">
-                  PrimeSign Private Limited<br />
-                  Bangalore, Karnataka<br />
-                  India
+                  {adminConfig?.contact?.address
+                    ? adminConfig.contact.address.split('\n').map((line: string, i: number) => <span key={i}>{i > 0 && <br />}{line}</span>)
+                    : <>PrimeSign Private Limited<br />Bangalore, Karnataka<br />India</>}
                 </p>
               </div>
               <div className="bg-background/50 backdrop-blur-sm p-6 rounded-xl border border-white/5 hover:border-primary/30 transition-colors">
                 <PhoneCall className="w-8 h-8 text-primary mb-4" />
                 <h4 className="font-bold text-lg mb-2">Call Us</h4>
                 <p className="text-muted-foreground text-sm">
-                  <a href="tel:+916366525253" className="hover:text-primary transition-colors">
-                    +91 63665 25253
+                  <a href={`tel:+91${(adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "6366525253").replace(/[^\d]/g, '').slice(-10)}`} className="hover:text-primary transition-colors">
+                    {adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "+91 63665 25253"}
                   </a>
                 </p>
               </div>
@@ -1013,25 +1014,22 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
                 <Mail className="w-8 h-8 text-primary mb-4" />
                 <h4 className="font-bold text-lg mb-2">Email Us</h4>
                 <p className="text-muted-foreground text-sm">
-                  <a href="mailto:hello@primesign.in" className="hover:text-primary transition-colors">
-                    hello@primesign.in
+                  <a href={`mailto:${adminConfig?.contact?.emails?.[0] || "hello@primesign.in"}`} className="hover:text-primary transition-colors">
+                    {adminConfig?.contact?.emails?.[0] || "hello@primesign.in"}
                   </a>
                 </p>
               </div>
               <div className="bg-background/50 backdrop-blur-sm p-6 rounded-xl border border-white/5 hover:border-primary/30 transition-colors">
                 <Clock className="w-8 h-8 text-primary mb-4" />
                 <h4 className="font-bold text-lg mb-2">Working Hours</h4>
-                <p className="text-muted-foreground text-sm">
-                  Mon - Sat: 9:00 AM - 7:00 PM<br />
-                  Sunday: Closed
-                </p>
+                <p className="text-muted-foreground text-sm" dangerouslySetInnerHTML={{ __html: adminConfig?.settings?.workingHours || "Mon - Sat: 9:00 AM - 7:00 PM<br>Sunday: Closed" }} />
               </div>
             </div>
 
             {/* Google Maps Embed */}
             <div className="rounded-2xl overflow-hidden border border-white/10 h-64">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.8865401047!2d77.46612999155236!3d12.953945337580189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4a3e!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1703123456789!5m2!1sen!2sin"
+                src={adminConfig?.settings?.mapsUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.8865401047!2d77.46612999155236!3d12.953945337580189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4a3e!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1703123456789!5m2!1sen!2sin"}
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'grayscale(100%) invert(92%) contrast(83%)' }}
@@ -1200,8 +1198,12 @@ export default function Home() {
     : ["/images/glow/3.webp", "/images/wall/3.webp", "/images/led/2.webp", "/images/square/brass.webp"];
 
   const displayReasons = adminConfig?.advantageImages && adminConfig.advantageImages.length >= 6
-    ? adminConfig.advantageImages.slice(0, 6).map((img: any) => img.label || img.toString())
-    : reasons;
+    ? adminConfig.advantageImages.slice(0, 6)
+    : reasons.map((label, i) => ({ label, url: "" }));
+
+  const advantageImages = displayReasons.map((r: any) => r.url || "").filter(Boolean);
+  const showAdvantageImages = advantageImages.length >= 4;
+  const advantageGridImages = showAdvantageImages ? advantageImages.slice(0, 4) : ["/images/glow/6.webp", "/images/wall/5.webp", "/images/led/3.webp", "/images/square/resto-square.webp"];
 
   const portfolioCategories = useMemo(() => {
     const categories: string[] = [];
@@ -1361,7 +1363,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <a 
-                href="https://wa.me/916366525253?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20get%20a%20quote%20for%20signage%20services."
+                href={`https://wa.me/${(adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "916366525253").replace(/[^\d]/g, '')}?text=${encodeURIComponent(adminConfig?.settings?.whatsappMessage || "Hello PrimeSign, I'd like to get a quote for signage services.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -1568,7 +1570,7 @@ export default function Home() {
               <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">Our Work</h2>
               <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight">REAL INSTALLATIONS</h3>
             </div>
-            <a href="https://www.youtube.com/@PrimesignBangalore" target="_blank" rel="noopener noreferrer">
+            <a href={adminConfig?.contact?.youtube || "https://www.youtube.com/@PrimesignBangalore"} target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="rounded-full border-white/20 uppercase tracking-widest font-bold">
                 Watch on YouTube
               </Button>
@@ -1662,7 +1664,7 @@ export default function Home() {
                 It requires structural integrity, flawless design, and reliable execution.
               </p>
               <div className="grid sm:grid-cols-2 gap-6">
-                {displayReasons.map((reason: string, i: number) => (
+                {displayReasons.map((reason: any, i: number) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
@@ -1671,15 +1673,19 @@ export default function Home() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5" />
-                    <span className="font-bold text-lg">{reason}</span>
+                    {reason.url ? (
+                      <img src={reason.url} alt={reason.label} className="w-8 h-8 shrink-0 mt-0.5 object-contain" />
+                    ) : (
+                      <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5" />
+                    )}
+                    <span className="font-bold text-lg">{reason.label}</span>
                   </motion.div>
                 ))}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              {["/images/glow/6.webp", "/images/wall/5.webp", "/images/led/3.webp", "/images/square/resto-square.webp"].map((src, i) => (
+              {advantageGridImages.map((src: string, i: number) => (
                 <div key={i} className="aspect-square rounded-xl overflow-hidden">
                   <img 
                     src={src} 
@@ -1703,7 +1709,7 @@ export default function Home() {
               TRUSTED BY BANGALORE BUSINESSES
             </h3>
             <a 
-              href="https://wa.me/916366525253?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20submit%20a%20review%20for%20your%20services." 
+              href={`https://wa.me/${(adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "916366525253").replace(/[^\d]/g, '')}?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20submit%20a%20review%20for%20your%20services.`}
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
@@ -1791,7 +1797,7 @@ export default function Home() {
       </section>
 
       {/* ============ CONTACT SECTION ============ */}
-      <ContactSection prefersReducedMotion={prefersReducedMotion} />
+      <ContactSection prefersReducedMotion={prefersReducedMotion} adminConfig={adminConfig} />
 
       {/* ============ CTA SECTION ============ */}
       <section className="py-24 relative overflow-hidden" id="cta">
@@ -1824,7 +1830,7 @@ export default function Home() {
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <a 
-                  href="https://wa.me/916366525253?text=Hello%20PrimeSign%2C%20I%27d%20like%20to%20discuss%20a%20project%20with%20you."
+                  href={`https://wa.me/${(adminConfig?.contact?.phones?.[0] || adminConfig?.settings?.whatsappNumber || "916366525253").replace(/[^\d]/g, '')}?text=${encodeURIComponent(adminConfig?.settings?.whatsappMessage || "Hello PrimeSign, I'd like to discuss a project with you.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
