@@ -25,54 +25,49 @@ const COLOR_SCHEMES = {
   "Lavender Dream": { p: "270 60% 55%", s: "330 50% 60%", b: "260 40% 97%", f: "260 25% 15%" },
 };
 
-// Dynamic service menu - reads from SAME config as Arsenal (shared database)
-// Falls back to hardcoded menu if no config available
-function getMenuFromConfig(): Record<string, { name: string; href: string; filter: string; serviceId: string }[]> {
+// Shared menu state - populated from localStorage or config.json
+let cachedMenu: Record<string, any[]> | null = null;
+
+async function loadMenuFromConfig(): Promise<Record<string, any[]>> {
+  // Try localStorage first
   try {
     const stored = localStorage.getItem("primesign-config");
     if (stored) {
       const config = JSON.parse(stored);
-      if (config.services && config.services.length > 0) {
-        // Group services by category
-        const groups: Record<string, any[]> = {};
-        config.services.forEach((s: any) => {
-          const cat = s.category || "sign-boards";
-          if (!groups[cat]) groups[cat] = [];
-          groups[cat].push(s);
-        });
-        
-        // Map category IDs to display names
-        const catNames: Record<string, string> = {
-          "sign-boards": "SIGN BOARDS",
-          "promotional": "PROMOTIONAL DISPLAY",
-          "digital": "DIGITAL PRINTS",
-          "commercial": "COMMERCIAL PRINTS",
-          "print": "DIGITAL PRINTS",
-          "apparel": "DIGITAL PRINTS",
-          "vehicle": "SIGN BOARDS",
-          "pvc-flex": "SIGN BOARDS",
-        };
-        
-        const menu: Record<string, any[]> = {};
-        for (const [cat, services] of Object.entries(groups)) {
-          const displayName = catNames[cat] || cat.toUpperCase();
-          if (!menu[displayName]) menu[displayName] = [];
-          services.forEach((s: any) => {
-            menu[displayName].push({
-              name: s.name,
-              href: "/#services",
-              filter: cat,
-              serviceId: s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
-            });
-          });
-        }
-        return menu;
-      }
+      if (config.services?.length > 0) return buildMenuFromServices(config.services);
     }
   } catch(e) {}
   
-  // Hardcoded fallback
+  // Fallback to config.json
+  try {
+    const resp = await fetch("/config.json");
+    if (resp.ok) {
+      const config = await resp.json();
+      if (config.services?.length > 0) return buildMenuFromServices(config.services);
+    }
+  } catch(e) {}
+  
   return {};
+}
+
+function buildMenuFromServices(services: any[]): Record<string, any[]> {
+  const catNames: Record<string, string> = {
+    "sign-boards": "SIGN BOARDS", "promotional": "PROMOTIONAL DISPLAY",
+    "digital": "DIGITAL PRINTS", "commercial": "COMMERCIAL PRINTS",
+    "print": "DIGITAL PRINTS", "apparel": "DIGITAL PRINTS",
+    "vehicle": "SIGN BOARDS", "pvc-flex": "SIGN BOARDS",
+  };
+  const menu: Record<string, any[]> = {};
+  services.forEach((s: any) => {
+    const cat = s.category || "sign-boards";
+    const displayName = catNames[cat] || cat.toUpperCase();
+    if (!menu[displayName]) menu[displayName] = [];
+    menu[displayName].push({
+      name: s.name, href: "/#services", filter: cat,
+      serviceId: s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
+    });
+  });
+  return menu;
 }
 
 interface DropdownMenuProps {
@@ -139,7 +134,16 @@ function DropdownMenu({ title, items, isOpen, onMouseEnter, onMouseLeave, onClic
 
 export default function Navbar() {
   const { open } = useQuoteModal();
-  const serviceMenu = getMenuFromConfig();
+  const [serviceMenu, setServiceMenu] = useState<Record<string, any[]>>(cachedMenu || {});
+  
+  useEffect(() => {
+    if (Object.keys(serviceMenu).length === 0) {
+      loadMenuFromConfig().then(menu => {
+        cachedMenu = menu;
+        setServiceMenu(menu);
+      });
+    }
+  }, []);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scheme, setScheme] = useState(() => localStorage.getItem("primesign-scheme") || "Obsidian Gold");
