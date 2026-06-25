@@ -361,7 +361,7 @@ export default function Navbar() {
               >
                 <div className="bg-card/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden w-[200px]">
                   <div className="p-2">
-                    {serviceMenu["COMMERCIAL PRINTS"] || [].map((item) => (
+                    {(serviceMenu["COMMERCIAL PRINTS"] || []).map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
