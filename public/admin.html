@@ -5008,21 +5008,12 @@
         });
         if (resp.ok) {
           const result = await resp.json();
-          showToast(`🌍 Published! ${result.services} services now live for all visitors. Commit config.json to GitHub for Netlify.`, 'success', 8000);
+          showToast(`🌍 Published! ${result.services} services updated. Site auto-updates in ~30 seconds.`, 'success', 6000);
         } else {
           throw new Error("Publish failed");
         }
       } catch(e) {
-        // Fallback: download the file
-        const dataStr = JSON.stringify(publishConfig, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'config.json';
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('⬇️ Downloaded config.json. Place in public/ folder and commit to GitHub.', 'warning', 8000);
+        showToast('❌ Publish failed. Check GITHUB_TOKEN in Netlify environment variables.', 'error', 8000);
       }
     }
 
