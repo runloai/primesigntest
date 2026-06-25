@@ -390,14 +390,14 @@
       "url": "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/portfolio/01.webp",
       "label": "Storefront LED Branding",
       "category": "led",
-      "featured": true
+      "featured": false
     },
     {
       "id": 2,
       "url": "https://raw.githubusercontent.com/runloai/PrimeSign/main/data/glow/4.webp",
       "label": "Night Glow Sign",
       "category": "glow",
-      "featured": false
+      "featured": true
     },
     {
       "id": 3,
@@ -556,6 +556,6 @@
     "whatsappNumber": "+91 6366525253",
     "whatsappMessage": "Hi Primesign! I want to share a file for my signage project."
   },
-  "_publishedAt": "2026-06-25T10:48:42.653Z",
+  "_publishedAt": "2026-06-25T10:49:05.950Z",
   "_version": "1.0"
 }
