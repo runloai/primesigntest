@@ -155,10 +155,6 @@ const SERVICES_CATEGORIES = [
       { name: "Glow Sign Board", desc: "Illuminated glow sign boards that attract attention day and night", img: "/images/glow/2.webp" },
       { name: "Acrylic Sign Board", desc: "High-gloss acrylic sign boards with laser-cut precision", img: "/images/acrylic/2.webp" },
       { name: "PVC/SS Letter Sign", desc: "PVC and stainless steel letter signs for modern corporate branding", img: "/images/pvc/1.webp" },
-      { name: "Hoardings", desc: "Large-format outdoor hoardings for maximum brand visibility", img: "/images/wall/2.webp" },
-      { name: "One Way Vision", desc: "Perforated window films for see-through branding on glass surfaces", img: "/images/vehicle/2.webp" },
-      { name: "Gloss Branding", desc: "High-gloss vinyl branding for a premium polished finish", img: "/images/led/3.webp" },
-      { name: "Wall Graphics", desc: "Custom wall murals and graphics for interior and exterior spaces", img: "/images/wall/3.webp" },
     ]
   },
   {
