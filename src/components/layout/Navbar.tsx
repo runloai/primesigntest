@@ -38,12 +38,16 @@ const SERVICE_MENU: Record<string, { name: string; href: string; filter: string;
     { name: "Glow Sign Board", href: "/#services", filter: "sign-boards", serviceId: "glow-sign-board" },
     { name: "Acrylic Sign Board", href: "/#services", filter: "sign-boards", serviceId: "acrylic-sign-board" },
     { name: "PVC/SS Letter Sign", href: "/#services", filter: "sign-boards", serviceId: "pvc-ss-letter-sign" },
-    { name: "Vehicle Wraps", href: "/#services", filter: "vehicle", serviceId: "vehicle-wraps" },
-    { name: "PVC & Flex", href: "/#services", filter: "pvc-flex", serviceId: "pvc-flex" },
     { name: "Hoardings", href: "/#services", filter: "outdoor", serviceId: "hoardings" },
     { name: "One Way Vision", href: "/#services", filter: "graphics", serviceId: "one-way-vision" },
     { name: "Gloss Branding", href: "/#services", filter: "graphics", serviceId: "gloss-branding" },
     { name: "Wall Graphics", href: "/#services", filter: "graphics", serviceId: "wall-graphics" },
+  ],
+  "VEHICLES": [
+    { name: "Vehicle Wraps", href: "/#services", filter: "vehicle", serviceId: "vehicle-wraps" },
+  ],
+  "PVC & FLEX": [
+    { name: "PVC & Flex", href: "/#services", filter: "pvc-flex", serviceId: "pvc-flex" },
   ],
   "PROMOTIONAL DISPLAY": [
     { name: "Promotional Tents", href: "/#services", filter: "promotional", serviceId: "promotional-tents" },
@@ -53,8 +57,10 @@ const SERVICE_MENU: Record<string, { name: string; href: string; filter: string;
     { name: "Posters", href: "/#services", filter: "print", serviceId: "posters" },
     { name: "Visiting Cards", href: "/#services", filter: "print", serviceId: "visiting-cards" },
     { name: "ID Cards", href: "/#services", filter: "print", serviceId: "id-cards" },
-    { name: "T-Shirts", href: "/#services", filter: "apparel", serviceId: "t-shirts" },
     { name: "Quick Printing", href: "/#services", filter: "print", serviceId: "quick-printing" },
+  ],
+  "APPAREL": [
+    { name: "T-Shirts", href: "/#services", filter: "apparel", serviceId: "t-shirts" },
   ],
 };
 
@@ -305,12 +311,44 @@ export default function Navbar() {
               onClick={() => handleDropdownToggle("PROMOTIONAL DISPLAY")}
             />
             <DropdownMenu
+              title="VEHICLES"
+              items={SERVICE_MENU["VEHICLES"] || []}
+              isOpen={openDropdown === "VEHICLES"}
+              onMouseEnter={() => handleDropdownEnter("VEHICLES")}
+              onMouseLeave={handleDropdownLeave}
+              onClick={() => handleDropdownToggle("VEHICLES")}
+            />
+            <DropdownMenu
+              title="PVC & FLEX"
+              items={SERVICE_MENU["PVC & FLEX"] || []}
+              isOpen={openDropdown === "PVC & FLEX"}
+              onMouseEnter={() => handleDropdownEnter("PVC & FLEX")}
+              onMouseLeave={handleDropdownLeave}
+              onClick={() => handleDropdownToggle("PVC & FLEX")}
+            />
+            <DropdownMenu
+              title="PROMOTIONAL"
+              items={SERVICE_MENU["PROMOTIONAL DISPLAY"] || []}
+              isOpen={openDropdown === "PROMOTIONAL DISPLAY"}
+              onMouseEnter={() => handleDropdownEnter("PROMOTIONAL DISPLAY")}
+              onMouseLeave={handleDropdownLeave}
+              onClick={() => handleDropdownToggle("PROMOTIONAL DISPLAY")}
+            />
+            <DropdownMenu
               title="DIGITAL PRINTS"
               items={SERVICE_MENU["DIGITAL PRINTS"] || []}
               isOpen={openDropdown === "DIGITAL PRINTS"}
               onMouseEnter={() => handleDropdownEnter("DIGITAL PRINTS")}
               onMouseLeave={handleDropdownLeave}
               onClick={() => handleDropdownToggle("DIGITAL PRINTS")}
+            />
+            <DropdownMenu
+              title="APPAREL"
+              items={SERVICE_MENU["APPAREL"] || []}
+              isOpen={openDropdown === "APPAREL"}
+              onMouseEnter={() => handleDropdownEnter("APPAREL")}
+              onMouseLeave={handleDropdownLeave}
+              onClick={() => handleDropdownToggle("APPAREL")}
             />
             
             {/* Direct Links */}
@@ -383,6 +421,20 @@ export default function Navbar() {
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
+                {/* Mobile Dropdown - Vehicles */}
+                <MobileDropdownSection 
+                  title="VEHICLES" 
+                  items={SERVICE_MENU["VEHICLES"] || []} 
+                  onItemClick={() => setIsMobileMenuOpen(false)}
+                />
+                
+                {/* Mobile Dropdown - PVC & Flex */}
+                <MobileDropdownSection 
+                  title="PVC & FLEX" 
+                  items={SERVICE_MENU["PVC & FLEX"] || []} 
+                  onItemClick={() => setIsMobileMenuOpen(false)}
+                />
+                
                 {/* Mobile Dropdown - Promotional */}
                 <MobileDropdownSection 
                   title="PROMOTIONAL DISPLAY" 
@@ -397,10 +449,10 @@ export default function Navbar() {
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
-                {/* Mobile Dropdown - Commercial */}
+                {/* Mobile Dropdown - Apparel */}
                 <MobileDropdownSection 
-                  title="COMMERCIAL PRINTS" 
-                  items={SERVICE_MENU["COMMERCIAL PRINTS"] || []} 
+                  title="APPAREL" 
+                  items={SERVICE_MENU["APPAREL"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
 

@@ -138,7 +138,7 @@ const HERO_SLIDES = [
   "/images/portfolio/06.webp",
 ];
 
-// ============ EXPANDED SERVICES (4 CATEGORIES, 20+ SERVICES) ============
+// ============ EXPANDED SERVICES (6 CATEGORIES, 22 SERVICES) ============
 const SERVICES_CATEGORIES = [
   {
     id: "sign-boards",
@@ -146,44 +146,68 @@ const SERVICES_CATEGORIES = [
     description: "Premium signage solutions for every business need",
     icon: "sign",
     items: [
-      { name: "LED Signs", desc: "Ultra-bright LED boards with ACP backing", img: "/images/led/1.webp", badge: "Popular" },
+      { name: "LED Signs", desc: "High-brightness LED boards with ACP backing and 3D letters", img: "/images/led/1.webp", badge: "Popular" },
       { name: "Glow Signs", desc: "Illuminated glow signs visible day and night", img: "/images/glow/1.webp" },
-      { name: "Acrylic Signs", desc: "Laser-cut precision acrylic", img: "/images/acrylic/1.webp" },
-      { name: "Wall Branding", desc: "Custom vinyl graphics and murals", img: "/images/wall/1.webp" },
-      { name: "Non-Light Sign Board", desc: "Non-illuminated signage", img: "/images/led/1.webp" },
-      { name: "3D LED Letters", desc: "Dimensional illuminated letters", img: "/images/led/2.webp" },
-      { name: "Glow Sign Board", desc: "Backlit sign boards", img: "/images/glow/2.webp" },
-      { name: "Acrylic Sign Board", desc: "Premium acrylic signage", img: "/images/acrylic/2.webp" },
-      { name: "PVC/SS Letter Sign", desc: "Metal and PVC letters", img: "/images/pvc/1.webp" },
-      { name: "Vehicle Wraps", desc: "Full and partial vehicle wraps", img: "/images/vehicle/1.webp" },
-      { name: "PVC & Flex", desc: "Durable flex printing", img: "/images/pvc/1.webp" },
-      { name: "Hoardings", desc: "Large outdoor displays", img: "/images/wall/2.webp" },
-      { name: "One Way Vision", desc: "See-through window vinyl", img: "/images/vehicle/2.webp" },
-      { name: "Gloss Branding", desc: "High-gloss finish signage", img: "/images/led/3.webp" },
-      { name: "Wall Graphics", desc: "Custom wall murals", img: "/images/wall/3.webp" },
+      { name: "Acrylic Signs", desc: "Laser-cut precision acrylic signs for corporate and retail", img: "/images/acrylic/1.webp" },
+      { name: "Wall Branding", desc: "Custom vinyl graphics and murals for interior and exterior walls", img: "/images/wall/1.webp" },
+      { name: "Non-Light Sign Board", desc: "Non-illuminated sign boards for daytime visibility and cost-effective branding", img: "/images/led/1.webp" },
+      { name: "3D LED Letters", desc: "Premium 3D fabricated LED letters for standout storefront branding", img: "/images/led/2.webp" },
+      { name: "Glow Sign Board", desc: "Illuminated glow sign boards that attract attention day and night", img: "/images/glow/2.webp" },
+      { name: "Acrylic Sign Board", desc: "High-gloss acrylic sign boards with laser-cut precision", img: "/images/acrylic/2.webp" },
+      { name: "PVC/SS Letter Sign", desc: "PVC and stainless steel letter signs for modern corporate branding", img: "/images/pvc/1.webp" },
+      { name: "Hoardings", desc: "Large-format outdoor hoardings for maximum brand visibility", img: "/images/wall/2.webp" },
+      { name: "One Way Vision", desc: "Perforated window films for see-through branding on glass surfaces", img: "/images/vehicle/2.webp" },
+      { name: "Gloss Branding", desc: "High-gloss vinyl branding for a premium polished finish", img: "/images/led/3.webp" },
+      { name: "Wall Graphics", desc: "Custom wall murals and graphics for interior and exterior spaces", img: "/images/wall/3.webp" },
+    ]
+  },
+  {
+    id: "vehicle",
+    title: "VEHICLES",
+    description: "Vehicle branding and wrap solutions",
+    icon: "vehicle",
+    items: [
+      { name: "Vehicle Wraps", desc: "Full and partial vehicle wraps for mobile advertising", img: "/images/vehicle/1.webp" },
+    ]
+  },
+  {
+    id: "pvc-flex",
+    title: "PVC & FLEX",
+    description: "Durable flex and PVC printing solutions",
+    icon: "pvc",
+    items: [
+      { name: "PVC & Flex", desc: "Durable outdoor flex printing for hoardings and banners", img: "/images/pvc/1.webp" },
     ]
   },
   {
     id: "promotional",
     title: "PROMOTIONAL DISPLAY",
-    description: "Display solutions for events & marketing",
+    description: "Eye-catching display solutions for events & marketing",
     icon: "display",
     items: [
-      { name: "Promotional Tents", desc: "Branded event tents", img: "/images/portfolio/01.webp" },
-      { name: "Roll Up Standees", desc: "Retractable banner stands", img: "/images/portfolio/03.webp" },
+      { name: "Promotional Tents", desc: "Custom branded promotional tents for events and outdoor campaigns", img: "/images/portfolio/01.webp" },
+      { name: "Roll Up Standees", desc: "Portable roll-up banner stands for indoor events and promotions", img: "/images/portfolio/03.webp" },
     ]
   },
   {
     id: "print",
     title: "DIGITAL PRINTS",
-    description: "High-quality digital printing",
+    description: "High-quality digital printing services",
     icon: "print",
     items: [
-      { name: "Posters", desc: "Large-format posters", img: "/images/wall/4.webp" },
-      { name: "Visiting Cards", desc: "Premium business cards", img: "/images/square/4.webp" },
-      { name: "ID Cards", desc: "Employee ID cards", img: "/images/square/5.webp" },
-      { name: "T-Shirts", desc: "Custom apparel printing", img: "/images/square/6.webp" },
-      { name: "Quick Printing", desc: "Fast turnaround digital printing", img: "/images/square/2.webp" },
+      { name: "Posters", desc: "High-quality poster printing for indoor and outdoor advertising", img: "/images/wall/4.webp" },
+      { name: "Visiting Cards", desc: "Premium visiting card printing on multiple paper stocks and finishes", img: "/images/square/4.webp" },
+      { name: "ID Cards", desc: "Custom ID card printing with lamination and accessories", img: "/images/square/5.webp" },
+      { name: "Quick Printing", desc: "Fast turnaround digital printing for brochures, flyers and documents", img: "/images/square/2.webp" },
+    ]
+  },
+  {
+    id: "apparel",
+    title: "APPAREL",
+    description: "Custom apparel and merchandise printing",
+    icon: "apparel",
+    items: [
+      { name: "T-Shirts", desc: "Custom t-shirt printing with screen and DTF transfer methods", img: "/images/square/6.webp" },
     ]
   },
 ];

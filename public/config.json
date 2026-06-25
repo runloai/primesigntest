@@ -528,34 +528,44 @@
     {
       "id": "sign-boards",
       "label": "Sign Boards",
-      "icon": "🪧",
+      "icon": "\ud83e\udea7",
       "description": "Premium signage solutions for every business need"
+    },
+    {
+      "id": "vehicle",
+      "label": "Vehicles",
+      "icon": "\ud83d\ude97",
+      "description": "Vehicle branding and wrap solutions"
+    },
+    {
+      "id": "pvc-flex",
+      "label": "PVC & Flex",
+      "icon": "\ud83d\udccb",
+      "description": "Durable flex and PVC printing solutions"
     },
     {
       "id": "promotional",
       "label": "Promotional Display",
-      "icon": "📢",
+      "icon": "\ud83d\udce2",
       "description": "Eye-catching display solutions for events & marketing"
     },
     {
-      "id": "digital",
+      "id": "print",
       "label": "Digital Prints",
-      "icon": "🖨️",
+      "icon": "\ud83d\udda8\ufe0f",
       "description": "High-quality digital printing on various media"
     },
     {
-      "id": "commercial",
-      "label": "Commercial",
-      "icon": "🏢",
-      "description": "Professional printing for business needs"
+      "id": "apparel",
+      "label": "Apparel",
+      "icon": "\ud83d\udc55",
+      "description": "Custom apparel and merchandise printing"
     }
   ],
   "settings": {
-    "logoType": "text",
+    "logoType": "image",
     "scheme": "Obsidian Gold",
     "whatsappNumber": "+91 6366525253",
     "whatsappMessage": "Hi Primesign! I want to share a file for my signage project."
-  },
-  "_publishedAt": "2026-06-25T10:49:05.950Z",
-  "_version": "1.0"
+  }
 }
