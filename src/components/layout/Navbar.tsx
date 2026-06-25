@@ -25,50 +25,40 @@ const COLOR_SCHEMES = {
   "Lavender Dream": { p: "270 60% 55%", s: "330 50% 60%", b: "260 40% 97%", f: "260 25% 15%" },
 };
 
-// Shared menu state - populated from localStorage or config.json
-let cachedMenu: Record<string, any[]> | null = null;
-
-async function loadMenuFromConfig(): Promise<Record<string, any[]>> {
-  // Try localStorage first
-  try {
-    const stored = localStorage.getItem("primesign-config");
-    if (stored) {
-      const config = JSON.parse(stored);
-      if (config.services?.length > 0) return buildMenuFromServices(config.services);
-    }
-  } catch(e) {}
-  
-  // Fallback to config.json
-  try {
-    const resp = await fetch("/config.json");
-    if (resp.ok) {
-      const config = await resp.json();
-      if (config.services?.length > 0) return buildMenuFromServices(config.services);
-    }
-  } catch(e) {}
-  
-  return {};
-}
-
-function buildMenuFromServices(services: any[]): Record<string, any[]> {
-  const catNames: Record<string, string> = {
-    "sign-boards": "SIGN BOARDS", "promotional": "PROMOTIONAL DISPLAY",
-    "digital": "DIGITAL PRINTS", "commercial": "COMMERCIAL PRINTS",
-    "print": "DIGITAL PRINTS", "apparel": "DIGITAL PRINTS",
-    "vehicle": "SIGN BOARDS", "pvc-flex": "SIGN BOARDS",
-  };
-  const menu: Record<string, any[]> = {};
-  services.forEach((s: any) => {
-    const cat = s.category || "sign-boards";
-    const displayName = catNames[cat] || cat.toUpperCase();
-    if (!menu[displayName]) menu[displayName] = [];
-    menu[displayName].push({
-      name: s.name, href: "/#services", filter: cat,
-      serviceId: s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
-    });
-  });
-  return menu;
-}
+// Hardcoded menu matching admin DEFAULT_CONFIG services exactly
+// When admin adds/removes services, update this list to keep in sync
+const SERVICE_MENU: Record<string, { name: string; href: string; filter: string; serviceId: string }[]> = {
+  "SIGN BOARDS": [
+    { name: "LED Signs", href: "/#services", filter: "sign-boards", serviceId: "led-signs" },
+    { name: "Non-Light Sign Board", href: "/#services", filter: "sign-boards", serviceId: "non-light-sign-board" },
+    { name: "3D LED Letters", href: "/#services", filter: "sign-boards", serviceId: "3d-led-letters" },
+    { name: "Glow Signs", href: "/#services", filter: "sign-boards", serviceId: "glow-signs" },
+    { name: "Glow Sign Board", href: "/#services", filter: "sign-boards", serviceId: "glow-sign-board" },
+    { name: "Acrylic Signs", href: "/#services", filter: "sign-boards", serviceId: "acrylic-signs" },
+    { name: "Acrylic Sign Board", href: "/#services", filter: "sign-boards", serviceId: "acrylic-sign-board" },
+    { name: "PVC & Flex", href: "/#services", filter: "pvc-flex", serviceId: "pvc-flex" },
+    { name: "PVC/SS Letter Sign", href: "/#services", filter: "sign-boards", serviceId: "pvc-ss-letter-sign" },
+    { name: "Hoardings", href: "/#services", filter: "sign-boards", serviceId: "hoardings" },
+    { name: "One Way Vision", href: "/#services", filter: "sign-boards", serviceId: "one-way-vision" },
+    { name: "Gloss Branding", href: "/#services", filter: "sign-boards", serviceId: "gloss-branding" },
+    { name: "Wall Branding", href: "/#services", filter: "wall", serviceId: "wall-branding" },
+    { name: "Wall Graphics", href: "/#services", filter: "sign-boards", serviceId: "wall-graphics" },
+    { name: "Vehicle Wraps", href: "/#services", filter: "vehicle", serviceId: "vehicle-wraps" },
+  ],
+  "PROMOTIONAL DISPLAY": [
+    { name: "Promotional Tents", href: "/#services", filter: "promotional", serviceId: "promotional-tents" },
+    { name: "Roll Up Standees", href: "/#services", filter: "promotional", serviceId: "roll-up-standees" },
+  ],
+  "DIGITAL PRINTS": [
+    { name: "Posters", href: "/#services", filter: "digital", serviceId: "posters" },
+    { name: "Visiting Cards", href: "/#services", filter: "digital", serviceId: "visiting-cards" },
+    { name: "ID Cards", href: "/#services", filter: "digital", serviceId: "id-cards" },
+    { name: "T-Shirts", href: "/#services", filter: "digital", serviceId: "t-shirts" },
+  ],
+  "COMMERCIAL PRINTS": [
+    { name: "Quick Printing", href: "/#services", filter: "commercial", serviceId: "quick-printing" },
+  ],
+};
 
 interface DropdownMenuProps {
   title: string;
@@ -134,28 +124,6 @@ function DropdownMenu({ title, items, isOpen, onMouseEnter, onMouseLeave, onClic
 
 export default function Navbar() {
   const { open } = useQuoteModal();
-  // Try synchronous localStorage first, then async config.json fallback
-  const [serviceMenu, setServiceMenu] = useState<Record<string, any[]>>(() => {
-    try {
-      const stored = localStorage.getItem("primesign-config");
-      if (stored) {
-        const config = JSON.parse(stored);
-        if (config.services?.length > 0) return buildMenuFromServices(config.services);
-      }
-    } catch(e) {}
-    return {};
-  });
-
-  useEffect(() => {
-    if (Object.keys(serviceMenu).length === 0) {
-      loadMenuFromConfig().then(menu => {
-        if (Object.keys(menu).length > 0) {
-          cachedMenu = menu;
-          setServiceMenu(menu);
-        }
-      });
-    }
-  }, []);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scheme, setScheme] = useState(() => localStorage.getItem("primesign-scheme") || "Obsidian Gold");
@@ -318,7 +286,7 @@ export default function Navbar() {
             {/* Multi-level Dropdown Menus */}
             <DropdownMenu
               title="SIGN BOARDS"
-              items={serviceMenu["SIGN BOARDS"] || []}
+              items={SERVICE_MENU["SIGN BOARDS"] || []}
               isOpen={openDropdown === "SIGN BOARDS"}
               onMouseEnter={() => handleDropdownEnter("SIGN BOARDS")}
               onMouseLeave={handleDropdownLeave}
@@ -326,7 +294,7 @@ export default function Navbar() {
             />
             <DropdownMenu
               title="PROMOTIONAL"
-              items={serviceMenu["PROMOTIONAL DISPLAY"] || []}
+              items={SERVICE_MENU["PROMOTIONAL DISPLAY"] || []}
               isOpen={openDropdown === "PROMOTIONAL DISPLAY"}
               onMouseEnter={() => handleDropdownEnter("PROMOTIONAL DISPLAY")}
               onMouseLeave={handleDropdownLeave}
@@ -334,7 +302,7 @@ export default function Navbar() {
             />
             <DropdownMenu
               title="DIGITAL PRINTS"
-              items={serviceMenu["DIGITAL PRINTS"] || []}
+              items={SERVICE_MENU["DIGITAL PRINTS"] || []}
               isOpen={openDropdown === "DIGITAL PRINTS"}
               onMouseEnter={() => handleDropdownEnter("DIGITAL PRINTS")}
               onMouseLeave={handleDropdownLeave}
@@ -361,7 +329,7 @@ export default function Navbar() {
               >
                 <div className="bg-card/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden w-[200px]">
                   <div className="p-2">
-                    {(serviceMenu["COMMERCIAL PRINTS"] || []).map((item) => (
+                    {(SERVICE_MENU["COMMERCIAL PRINTS"] || []).map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
@@ -441,28 +409,28 @@ export default function Navbar() {
                 {/* Mobile Dropdown - Sign Boards */}
                 <MobileDropdownSection 
                   title="SIGN BOARDS" 
-                  items={serviceMenu["SIGN BOARDS"] || []} 
+                  items={SERVICE_MENU["SIGN BOARDS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Promotional */}
                 <MobileDropdownSection 
                   title="PROMOTIONAL DISPLAY" 
-                  items={serviceMenu["PROMOTIONAL DISPLAY"] || []} 
+                  items={SERVICE_MENU["PROMOTIONAL DISPLAY"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Digital Prints */}
                 <MobileDropdownSection 
                   title="DIGITAL PRINTS" 
-                  items={serviceMenu["DIGITAL PRINTS"] || []} 
+                  items={SERVICE_MENU["DIGITAL PRINTS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Commercial */}
                 <MobileDropdownSection 
                   title="COMMERCIAL PRINTS" 
-                  items={serviceMenu["COMMERCIAL PRINTS"] || []} 
+                  items={SERVICE_MENU["COMMERCIAL PRINTS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
 
