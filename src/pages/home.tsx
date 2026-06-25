@@ -80,7 +80,7 @@ async function fetchSharedConfig(): Promise<{ portfolio?: PortfolioConfig[]; her
   if (sharedConfigFetched) return sharedConfig;
   
   try {
-    const response = await fetch('/config.json', { 
+    const response = await fetch('/config.json?t=' + Date.now(), { 
       method: 'GET',
       headers: { 'Accept': 'application/json' }
     });

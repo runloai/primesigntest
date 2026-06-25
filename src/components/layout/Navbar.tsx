@@ -134,7 +134,7 @@ export default function Navbar() {
   const [useTextLogo, setUseTextLogo] = useState(false);
 
   useEffect(() => {
-    fetch("/config.json").then(r => r.json()).then(c => {
+    fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
       if (c.settings?.scheme && COLOR_SCHEMES[c.settings.scheme]) setScheme(c.settings.scheme);
     }).catch(() => {});

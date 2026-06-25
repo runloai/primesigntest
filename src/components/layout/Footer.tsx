@@ -48,7 +48,7 @@ export default function Footer() {
   const [location, setLocation] = useLocation();
   
   useEffect(() => {
-    fetch("/config.json").then(r => r.json()).then(c => {
+    fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
       if (c.settings?.logoType === "text") setUseTextLogo(true);
     }).catch(() => {});
     setContact(getContactConfig());
