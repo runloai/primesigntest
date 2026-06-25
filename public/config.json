@@ -1,4 +1,18 @@
 {
-  "_publishedAt": "2026-06-25T17:00:09.693Z",
+  "contact": {},
+  "testimonials": [],
+  "services": [
+    {
+      "name": "test"
+    }
+  ],
+  "portfolio": [],
+  "hero": {
+    "badge": "TEST_BADGE_FROM_NETLIFY"
+  },
+  "aboutImages": [],
+  "advantageImages": [],
+  "settings": {},
+  "_publishedAt": "2026-06-25T17:00:19.269Z",
   "_version": "1.0"
 }
