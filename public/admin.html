@@ -5025,17 +5025,6 @@
         showToast('⬇️ Downloaded config.json. Place in public/ folder and commit to GitHub.', 'warning', 8000);
       }
     }
-      // Also show a modal with instructions
-      setTimeout(() => {
-        alert(`📋 PUBLISH INSTRUCTIONS:
-
-1. Place the downloaded "config.json" in your project's "public/" folder
-2. Commit and push to your GitHub repository
-3. The website will automatically read from /config.json for all visitors
-
-💡 TIP: Admin's localStorage config acts as "preview" mode - visitors see the config.json version, admins see their local changes first.`);
-      }, 100);
-    }
 
     async function importData(event) {
       const file = event.target.files[0];
