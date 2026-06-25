@@ -25,39 +25,55 @@ const COLOR_SCHEMES = {
   "Lavender Dream": { p: "270 60% 55%", s: "330 50% 60%", b: "260 40% 97%", f: "260 25% 15%" },
 };
 
-// Service categories structure matching primesign.in - now with scroll-to-filter
-const SERVICE_MENU = {
-  "SIGN BOARDS": [
-    { name: "Non-Light Sign Board", href: "/#services", filter: "sign-boards" },
-    { name: "3D LED Letters", href: "/#services", filter: "sign-boards" },
-    { name: "Glow Sign Board", href: "/#services", filter: "sign-boards" },
-    { name: "Acrylic Sign Board", href: "/#services", filter: "sign-boards" },
-    { name: "PVC/SS Letter Sign", href: "/#services", filter: "sign-boards" },
-    { name: "Hoardings", href: "/#services", filter: "sign-boards" },
-    { name: "One Way Vision", href: "/#services", filter: "sign-boards" },
-    { name: "Gloss Branding", href: "/#services", filter: "sign-boards" },
-    { name: "Wall Graphics", href: "/#services", filter: "sign-boards" },
-  ],
-  "PROMOTIONAL DISPLAY": [
-    { name: "Tents", href: "/#services", filter: "promotional" },
-    { name: "Roll Up Standees", href: "/#services", filter: "promotional" },
-    { name: "Promo Display", href: "/#services", filter: "promotional" },
-  ],
-  "DIGITAL PRINTS": [
-    { name: "Posters", href: "/#services", filter: "digital" },
-    { name: "Visiting Cards", href: "/#services", filter: "digital" },
-    { name: "ID Cards", href: "/#services", filter: "digital" },
-    { name: "T-Shirts", href: "/#services", filter: "digital" },
-    { name: "Mugs", href: "/#services", filter: "digital" },
-    { name: "Invitations", href: "/#services", filter: "digital" },
-    { name: "Certificates", href: "/#services", filter: "digital" },
-  ],
-  "COMMERCIAL PRINTS": [
-    { name: "Quick Printing", href: "/#services", filter: "commercial" },
-    { name: "Flex Format", href: "/#services", filter: "commercial" },
-    { name: "Digital Offset", href: "/#services", filter: "commercial" },
-  ],
-};
+// Dynamic service menu - reads from SAME config as Arsenal (shared database)
+// Falls back to hardcoded menu if no config available
+function getMenuFromConfig(): Record<string, { name: string; href: string; filter: string; serviceId: string }[]> {
+  try {
+    const stored = localStorage.getItem("primesign-config");
+    if (stored) {
+      const config = JSON.parse(stored);
+      if (config.services && config.services.length > 0) {
+        // Group services by category
+        const groups: Record<string, any[]> = {};
+        config.services.forEach((s: any) => {
+          const cat = s.category || "sign-boards";
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(s);
+        });
+        
+        // Map category IDs to display names
+        const catNames: Record<string, string> = {
+          "sign-boards": "SIGN BOARDS",
+          "promotional": "PROMOTIONAL DISPLAY",
+          "digital": "DIGITAL PRINTS",
+          "commercial": "COMMERCIAL PRINTS",
+          "print": "DIGITAL PRINTS",
+          "apparel": "DIGITAL PRINTS",
+          "vehicle": "SIGN BOARDS",
+          "pvc-flex": "SIGN BOARDS",
+        };
+        
+        const menu: Record<string, any[]> = {};
+        for (const [cat, services] of Object.entries(groups)) {
+          const displayName = catNames[cat] || cat.toUpperCase();
+          if (!menu[displayName]) menu[displayName] = [];
+          services.forEach((s: any) => {
+            menu[displayName].push({
+              name: s.name,
+              href: "/#services",
+              filter: cat,
+              serviceId: s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
+            });
+          });
+        }
+        return menu;
+      }
+    }
+  } catch(e) {}
+  
+  // Hardcoded fallback
+  return {};
+}
 
 interface DropdownMenuProps {
   title: string;
@@ -119,6 +135,7 @@ function DropdownMenu({ title, items, isOpen, onMouseEnter, onMouseLeave, onClic
 
 export default function Navbar() {
   const { open } = useQuoteModal();
+  const serviceMenu = getMenuFromConfig();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scheme, setScheme] = useState(() => localStorage.getItem("primesign-scheme") || "Obsidian Gold");
@@ -281,7 +298,7 @@ export default function Navbar() {
             {/* Multi-level Dropdown Menus */}
             <DropdownMenu
               title="SIGN BOARDS"
-              items={SERVICE_MENU["SIGN BOARDS"]}
+              items={serviceMenu["SIGN BOARDS"] || []}
               isOpen={openDropdown === "SIGN BOARDS"}
               onMouseEnter={() => handleDropdownEnter("SIGN BOARDS")}
               onMouseLeave={handleDropdownLeave}
@@ -289,7 +306,7 @@ export default function Navbar() {
             />
             <DropdownMenu
               title="PROMOTIONAL"
-              items={SERVICE_MENU["PROMOTIONAL DISPLAY"]}
+              items={serviceMenu["PROMOTIONAL DISPLAY"] || []}
               isOpen={openDropdown === "PROMOTIONAL DISPLAY"}
               onMouseEnter={() => handleDropdownEnter("PROMOTIONAL DISPLAY")}
               onMouseLeave={handleDropdownLeave}
@@ -297,7 +314,7 @@ export default function Navbar() {
             />
             <DropdownMenu
               title="DIGITAL PRINTS"
-              items={SERVICE_MENU["DIGITAL PRINTS"]}
+              items={serviceMenu["DIGITAL PRINTS"] || []}
               isOpen={openDropdown === "DIGITAL PRINTS"}
               onMouseEnter={() => handleDropdownEnter("DIGITAL PRINTS")}
               onMouseLeave={handleDropdownLeave}
@@ -324,7 +341,7 @@ export default function Navbar() {
               >
                 <div className="bg-card/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden w-[200px]">
                   <div className="p-2">
-                    {SERVICE_MENU["COMMERCIAL PRINTS"].map((item) => (
+                    {serviceMenu["COMMERCIAL PRINTS"] || [].map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
@@ -404,28 +421,28 @@ export default function Navbar() {
                 {/* Mobile Dropdown - Sign Boards */}
                 <MobileDropdownSection 
                   title="SIGN BOARDS" 
-                  items={SERVICE_MENU["SIGN BOARDS"]} 
+                  items={serviceMenu["SIGN BOARDS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Promotional */}
                 <MobileDropdownSection 
                   title="PROMOTIONAL DISPLAY" 
-                  items={SERVICE_MENU["PROMOTIONAL DISPLAY"]} 
+                  items={serviceMenu["PROMOTIONAL DISPLAY"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Digital Prints */}
                 <MobileDropdownSection 
                   title="DIGITAL PRINTS" 
-                  items={SERVICE_MENU["DIGITAL PRINTS"]} 
+                  items={serviceMenu["DIGITAL PRINTS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Mobile Dropdown - Commercial */}
                 <MobileDropdownSection 
                   title="COMMERCIAL PRINTS" 
-                  items={SERVICE_MENU["COMMERCIAL PRINTS"]} 
+                  items={serviceMenu["COMMERCIAL PRINTS"] || []} 
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
 
