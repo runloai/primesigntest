@@ -458,6 +458,319 @@ function ServiceImageGallery({ images, serviceTitle, prefersReducedMotion }: Ser
   );
 }
 
+// Contact Form Component
+function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    message: '',
+  });
+  const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^[\d\s\-+()]{10,}$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+    
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      // Validate file size (max 5MB)
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, file: 'File size must be less than 5MB' }));
+        return;
+      }
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        setErrors(prev => ({ ...prev, file: 'Only images (JPG, PNG, WebP) and PDF files are allowed' }));
+        return;
+      }
+      setFile(selectedFile);
+      setErrors(prev => ({ ...prev, file: '' }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    // Simulate form submission with timeout
+    try {
+      // In a real implementation, you would send the data to your backend
+      // const formDataToSend = new FormData();
+      // Object.entries(formData).forEach(([key, value]) => {
+      //   formDataToSend.append(key, value);
+      // });
+      // if (file) {
+      //   formDataToSend.append('file', file);
+      // }
+      // const response = await fetch('/api/contact', {
+      //   method: 'POST',
+      //   body: formDataToSend,
+      // });
+
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', address: '', message: '' });
+      setFile(null);
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } catch (error) {
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-background/50 border border-white/10 rounded-2xl p-6 md:p-8">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Name & Email Row */}
+        <div className="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+              Full Name <span className="text-primary">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 bg-background/50 border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ${
+                errors.name ? 'border-red-500 focus:ring-red-500/50' : 'border-white/10 hover:border-primary/30 focus:border-primary'
+              }`}
+              placeholder="John Doe"
+            />
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {errors.name}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 bg-background/50 border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ${
+                errors.email ? 'border-red-500 focus:ring-red-500/50' : 'border-white/10 hover:border-primary/30 focus:border-primary'
+              }`}
+              placeholder="john@example.com"
+            />
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {errors.email}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Phone & Address Row */}
+        <div className="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
+              Phone Number <span className="text-primary">*</span>
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 bg-background/50 border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ${
+                errors.phone ? 'border-red-500 focus:ring-red-500/50' : 'border-white/10 hover:border-primary/30 focus:border-primary'
+              }`}
+              placeholder="+91 98765 43210"
+            />
+            {errors.phone && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {errors.phone}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="address" className="block text-sm font-medium text-foreground mb-2">
+              Address / Location
+            </label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-background/50 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary hover:border-primary/30 transition-all"
+              placeholder="Bangalore, Karnataka"
+            />
+          </div>
+        </div>
+
+        {/* Message */}
+        <div>
+          <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
+            Message / Project Details
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows={4}
+            value={formData.message}
+            onChange={handleChange}
+            className="w-full px-4 py-3 bg-background/50 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary hover:border-primary/30 transition-all resize-none"
+            placeholder="Tell us about your project requirements..."
+          />
+        </div>
+
+        {/* File Upload */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Upload Reference (Optional)
+          </label>
+          <div className="relative">
+            <input
+              type="file"
+              id="file"
+              accept="image/jpeg,image/png,image/webp,image/jpg,application/pdf"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="file"
+              className={`flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                file 
+                  ? 'border-primary/50 bg-primary/5 text-primary' 
+                  : 'border-white/20 hover:border-primary/30 hover:bg-white/5'
+              }`}
+            >
+              {file ? (
+                <>
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span className="text-sm">{file.name}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setFile(null);
+                    }}
+                    className="text-xs text-red-400 hover:text-red-500 underline"
+                  >
+                    Remove
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Drop a file here or click to upload (Max 5MB)
+                  </span>
+                </>
+              )}
+            </label>
+            {errors.file && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {errors.file}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Submit Status Messages */}
+        {submitStatus === 'success' && (
+          <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-green-500">Thank you!</p>
+              <p className="text-sm text-green-400/80">We'll get back to you within 24 hours.</p>
+            </div>
+          </div>
+        )}
+
+        {submitStatus === 'error' && (
+          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-red-500">Oops!</p>
+              <p className="text-sm text-red-400/80">Something went wrong. Please try again or contact us directly.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-bold uppercase tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed box-glow"
+        >
+          {isSubmitting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+              Sending...
+            </>
+          ) : (
+            <>
+              <Send className="w-5 h-5" />
+              Send Message
+            </>
+          )}
+        </button>
+
+        <p className="text-center text-xs text-muted-foreground">
+          By submitting this form, you agree to our privacy policy and terms of service.
+        </p>
+      </form>
+    </div>
+  );
+}
+
 export default function Home() {
   const { open: openQuote } = useQuoteModal();
   const [heroIndex, setHeroIndex] = useState(0);
