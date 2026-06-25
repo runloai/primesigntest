@@ -537,37 +537,58 @@ export default function Navbar() {
 // Mobile Dropdown Section Component
 interface MobileDropdownSectionProps {
   title: string;
-  items: { name: string; href: string }[];
+  items: { name: string; href: string; filter?: string }[];
   onItemClick: () => void;
 }
 
 function MobileDropdownSection({ title, items, onItemClick }: MobileDropdownSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [location, setLocation] = useLocation();
+
+  const handleItemClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Close the mobile menu first
+    onItemClick();
+    
+    // Handle navigation with filter if present
+    const item = items.find(i => i.href === href);
+    if (item && 'filter' in item && item.filter) {
+      // Navigate to services with filter
+      setLocation('/#services');
+      // Store filter in sessionStorage to be picked up by services section
+      sessionStorage.setItem('serviceFilter', item.filter as string);
+    } else {
+      setLocation(href);
+    }
+  };
 
   return (
     <div className="border-b border-white/10">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between py-3 text-lg font-display font-bold uppercase tracking-widest hover:text-primary transition-colors"
+        aria-expanded={isOpen}
       >
         {title}
         <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <div
         className={`overflow-hidden transition-all duration-200 ${
-          isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <div className="pb-4 pl-4 space-y-1">
           {items.map((item) => (
-            <Link
+            <a
               key={item.name}
               href={item.href}
-              onClick={onItemClick}
-              className="block py-2 text-sm text-foreground/70 hover:text-primary transition-colors"
+              onClick={(e) => handleItemClick(e, item.href)}
+              className="block py-2 text-sm text-foreground/70 hover:text-primary transition-colors cursor-pointer"
             >
               {item.name}
-            </Link>
+            </a>
           ))}
         </div>
       </div>
