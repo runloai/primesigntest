@@ -109,24 +109,25 @@ export default function QuoteModal() {
   const selectClass = "flex h-11 w-full rounded-md border border-white/10 bg-background/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-colors";
 
   return (
-    <AnimatePresence>
-      {isOpen && [
-        <motion.div
-          key="quote-backdrop"
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={handleClose}
-        />,
-        <motion.div
-          key="quote-panel"
-          className="fixed inset-y-0 right-0 w-full max-w-xl bg-card border-l border-white/10 z-[101] overflow-y-auto shadow-2xl"
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          transition={{ type: "spring", damping: 28, stiffness: 280 }}
-        >
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <>
+          <motion.div
+            key="quote-backdrop"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleClose}
+          />
+          <motion.div
+            key="quote-panel"
+            className="fixed inset-y-0 right-0 w-full max-w-xl bg-card border-l border-white/10 z-[101] overflow-y-auto shadow-2xl"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 280 }}
+          >
             {/* Header */}
             <div className="sticky top-0 bg-card/95 backdrop-blur border-b border-white/10 px-6 py-5 flex items-start justify-between z-10">
               <div>
@@ -280,7 +281,8 @@ export default function QuoteModal() {
               </form>
             )}
           </motion.div>
-        ]}
+        </>
+      )}
     </AnimatePresence>
   );
 }
