@@ -57,10 +57,6 @@
           "label": "LED Signs - Image 1"
         },
         {
-          "url": "/images/led/2.webp",
-          "label": "LED Signs - Image 2"
-        },
-        {
           "url": "/images/led/3.webp",
           "label": "LED Signs - Image 3"
         },
@@ -71,6 +67,10 @@
         {
           "url": "/images/led/5.webp",
           "label": "LED Signs - Image 5"
+        },
+        {
+          "url": "data:image/webp;base64,UklGRiICAABXRUJQVlA4WAoAAAAgAAAAAAAAAAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggNAAAAPABAJ0BKgEAAQAAwBIloAJ0ugH4AARMAAD++nlf/3T17T17T1/MH/+K3/Fb/it//E4gAAA=",
+          "label": "test-image-upload"
         }
       ]
     },
@@ -192,14 +192,6 @@
         {
           "url": "/images/pvc/1.webp",
           "label": "PVC & Flex - Image 1"
-        },
-        {
-          "url": "/images/square/6.webp",
-          "label": "PVC & Flex - Image 2"
-        },
-        {
-          "url": "/images/square/7.webp",
-          "label": "PVC & Flex - Image 3"
         }
       ]
     },
@@ -221,10 +213,6 @@
         {
           "url": "/images/services/sign-boards/nonlight-3.png",
           "label": "Non-Light Sign Board - Image 3"
-        },
-        {
-          "url": "/images/services/sign-boards/nonlight-4.png",
-          "label": "Non-Light Sign Board - Image 4"
         }
       ]
     },
@@ -358,10 +346,6 @@
         {
           "url": "/images/services/sign-boards/hoardings-3.png",
           "label": "Hoardings - Image 3"
-        },
-        {
-          "url": "/images/services/sign-boards/hoardings-4.png",
-          "label": "Hoardings - Image 4"
         }
       ]
     },
@@ -383,10 +367,6 @@
         {
           "url": "/images/services/sign-boards/house-3.png",
           "label": "One Way Vision - Image 3"
-        },
-        {
-          "url": "/images/services/sign-boards/house-4.png",
-          "label": "One Way Vision - Image 4"
         }
       ]
     },
@@ -498,15 +478,15 @@
       "category": "digital",
       "images": [
         {
-          "url": "/images/square/1.webp",
+          "url": "/images/01.jpg",
           "label": "Posters - Image 1"
         },
         {
-          "url": "/images/square/2.webp",
+          "url": "/images/02.jpg",
           "label": "Posters - Image 2"
         },
         {
-          "url": "/images/square/3.webp",
+          "url": "/images/003.jpg",
           "label": "Posters - Image 3"
         }
       ]
@@ -519,15 +499,15 @@
       "category": "digital",
       "images": [
         {
-          "url": "/images/square/brass.webp",
+          "url": "/images/004.jpg",
           "label": "Visiting Cards - Image 1"
         },
         {
-          "url": "/images/portfolio/01.webp",
+          "url": "/images/005.jpg",
           "label": "Visiting Cards - Image 2"
         },
         {
-          "url": "/images/portfolio/03.webp",
+          "url": "/images/square/brass.webp",
           "label": "Visiting Cards - Image 3"
         }
       ]
@@ -561,15 +541,15 @@
       "category": "digital",
       "images": [
         {
-          "url": "/images/portfolio/3.webp",
+          "url": "/images/square/7.webp",
           "label": "T-Shirts - Image 1"
         },
         {
-          "url": "/images/portfolio/4.webp",
+          "url": "/images/square/8.webp",
           "label": "T-Shirts - Image 2"
         },
         {
-          "url": "/images/portfolio/7.webp",
+          "url": "/images/hero-yt.webp",
           "label": "T-Shirts - Image 3"
         }
       ]
@@ -789,6 +769,6 @@
     "helpText": "Ready to transform your brand visibility? Let's discuss your project.",
     "mapsUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.8865401047!2d77.46612999155236!3d12.953945337580189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4a3e!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1703123456789!5m2!1sen!2sin"
   },
-  "_publishedAt": "2026-06-26T05:37:24.977Z",
+  "_publishedAt": "2026-06-26T06:15:54.370Z",
   "_version": "2.0"
 }
