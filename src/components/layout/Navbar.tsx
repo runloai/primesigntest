@@ -21,31 +21,11 @@ const COLOR_SCHEMES = {
   "Lavender Dream": { p: "270 60% 55%", s: "330 50% 60%", b: "260 40% 97%", f: "260 25% 15%" },
 };
 
-// Fallback menu used only when config.json fails to load
-const FALLBACK_SERVICE_MENU: Record<string, { name: string; href: string; filter: string; serviceId: string }[]> = {
-  "SIGN BOARDS": [
-    { name: "LED Signs", href: "/#services", filter: "sign-boards", serviceId: "led-signs" },
-    { name: "Glow Signs", href: "/#services", filter: "sign-boards", serviceId: "glow-signs" },
-    { name: "Acrylic Signs", href: "/#services", filter: "sign-boards", serviceId: "acrylic-signs" },
-    { name: "Wall Branding", href: "/#services", filter: "sign-boards", serviceId: "wall-branding" },
-    { name: "Vehicle Wraps", href: "/#services", filter: "sign-boards", serviceId: "vehicle-wraps" },
-    { name: "PVC & Flex", href: "/#services", filter: "sign-boards", serviceId: "pvc-flex" },
-    { name: "PVC/SS Letter Sign", href: "/#services", filter: "sign-boards", serviceId: "pvc-ss-letter-sign" },
-    { name: "Non-Light Sign Board", href: "/#services", filter: "sign-boards", serviceId: "non-light-sign-board" },
-    { name: "Hoardings", href: "/#services", filter: "sign-boards", serviceId: "hoardings" },
-    { name: "One Way Vision", href: "/#services", filter: "sign-boards", serviceId: "one-way-vision" },
-  ],
-  "PROMOTIONAL DISPLAY": [
-    { name: "Promotional Tents", href: "/#services", filter: "promotional", serviceId: "promotional-tents" },
-    { name: "Roll Up Standees", href: "/#services", filter: "promotional", serviceId: "roll-up-standees" },
-  ],
-  "DIGITAL PRINTS": [
-    { name: "Posters", href: "/#services", filter: "digital", serviceId: "posters" },
-    { name: "Visiting Cards", href: "/#services", filter: "digital", serviceId: "visiting-cards" },
-    { name: "ID Cards", href: "/#services", filter: "digital", serviceId: "id-cards" },
-    { name: "T-Shirts", href: "/#services", filter: "digital", serviceId: "t-shirts" },
-    { name: "Quick Printing", href: "/#services", filter: "digital", serviceId: "quick-printing" },
-  ],
+// Category display names for service menu grouping
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  "sign-boards": "SIGN BOARDS",
+  "promotional": "PROMOTIONAL DISPLAY",
+  "digital": "DIGITAL PRINTS",
 };
 
 interface DropdownMenuItem {
@@ -124,7 +104,7 @@ export default function Navbar() {
   const [scheme, setScheme] = useState("Obsidian Gold");
   const [useTextLogo, setUseTextLogo] = useState(false);
   const [logoSrc, setLogoSrc] = useState("https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp");
-  const [serviceMenu, setServiceMenu] = useState<Record<string, DropdownMenuItem[]>>(FALLBACK_SERVICE_MENU);
+  const [serviceMenu, setServiceMenu] = useState<Record<string, DropdownMenuItem[]>>({});
   const [configContact, setConfigContact] = useState<{ phones?: string[]; emails?: string[]; facebook?: string; instagram?: string; youtube?: string } | null>(null);
   const [workingHours, setWorkingHours] = useState("Mon-Sat: 9:00 AM - 7:00 PM<br>Sunday: Closed");
 
@@ -137,15 +117,10 @@ export default function Navbar() {
       if (c.settings?.workingHours) setWorkingHours(c.settings.workingHours);
       if (c.contact) setConfigContact(c.contact);
       if (c.services && c.services.length > 0) {
-        const categoryTitles: Record<string, string> = {
-          "sign-boards": "SIGN BOARDS",
-          "promotional": "PROMOTIONAL DISPLAY",
-          "digital": "DIGITAL PRINTS",
-        };
         const grouped: Record<string, DropdownMenuItem[]> = {};
         c.services.forEach((s: any) => {
           const cat = s.category || "General";
-          const title = categoryTitles[cat] || cat.toUpperCase();
+          const title = CATEGORY_DISPLAY_NAMES[cat] || cat.toUpperCase();
           if (!grouped[title]) grouped[title] = [];
           const serviceId = s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
           grouped[title].push({ name: s.name, href: "/#services", filter: cat, serviceId });

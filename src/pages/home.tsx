@@ -150,50 +150,9 @@ const HERO_SLIDES = [
   "/images/portfolio/06.webp",
 ];
 
-// ============ EXPANDED SERVICES (3 CATEGORIES) ============
-const SERVICES_CATEGORIES = [
-  {
-    id: "sign-boards",
-    title: "SIGN BOARDS",
-    description: "Premium signage solutions including LED, glow, acrylic, wall branding, vehicle wraps, hoardings & more",
-    icon: "sign",
-    items: [
-      { name: "LED Signs", desc: "High-brightness LED boards with ACP backing and 3D letters", img: "/images/led/1.webp", badge: "Popular" },
-      { name: "Glow Signs", desc: "Illuminated glow signs visible day and night", img: "/images/glow/1.webp" },
-      { name: "Acrylic Signs", desc: "Laser-cut precision acrylic signs for corporate and retail", img: "/images/services/sign-boards/acrylic-1.png" },
-      { name: "Wall Branding", desc: "Custom vinyl graphics and murals for interior and exterior walls", img: "/images/services/sign-boards/wall-1.jpg" },
-      { name: "Vehicle Wraps", desc: "Full and partial vehicle wraps for mobile advertising", img: "/images/services/sign-boards/vehicle-1.jpg" },
-      { name: "PVC & Flex", desc: "Durable outdoor flex printing for hoardings and banners", img: "/images/services/sign-boards/pvc-ss-1.png" },
-      { name: "PVC/SS Letter Sign", desc: "PVC and stainless steel letter signs for modern corporate branding", img: "/images/services/sign-boards/pvc-ss-1.png" },
-      { name: "Non-Light Sign Board", desc: "Non-illuminated sign boards for daytime visibility and cost-effective branding", img: "/images/services/sign-boards/nonlight-1.png" },
-      { name: "Hoardings", desc: "Large-format outdoor hoardings for maximum brand visibility", img: "/images/services/sign-boards/hoardings-1.png" },
-      { name: "One Way Vision", desc: "Perforated window films for see-through branding on glass surfaces", img: "/images/services/sign-boards/house-1.png" },
-    ]
-  },
-  {
-    id: "promotional",
-    title: "PROMOTIONAL DISPLAY",
-    description: "Eye-catching display solutions for events & marketing",
-    icon: "display",
-    items: [
-      { name: "Promotional Tents", desc: "Custom branded promotional tents for events and outdoor campaigns", img: "/images/services/promotional/tent-1.png" },
-      { name: "Roll Up Standees", desc: "Portable roll-up banner stands for indoor events and promotions", img: "/images/services/promotional/rollup-1.png" },
-    ]
-  },
-  {
-    id: "digital",
-    title: "DIGITAL PRINTS",
-    description: "High-quality digital printing services",
-    icon: "print",
-    items: [
-      { name: "Posters", desc: "High-quality poster printing for indoor and outdoor advertising", img: "/images/square/1.webp" },
-      { name: "Visiting Cards", desc: "Premium visiting card printing on multiple paper stocks and finishes", img: "/images/square/brass.webp" },
-      { name: "ID Cards", desc: "Custom ID card printing with lamination and accessories", img: "/images/portfolio/01.webp" },
-      { name: "T-Shirts", desc: "Custom t-shirt printing with screen and DTF transfer methods", img: "/images/portfolio/06.webp" },
-      { name: "Quick Printing", desc: "Fast turnaround digital printing for brochures, flyers and documents", img: "/images/portfolio/005.webp" },
-    ]
-  },
-];
+// ============ SERVICES CATEGORIES ============
+// Built dynamically from config.json services array - see buildServiceCategoriesFromServices()
+// Will be populated at runtime from config.json or localStorage preview
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -479,7 +438,15 @@ function getDynamicServiceCategories(): typeof SERVICES_CATEGORIES | null {
     if (stored) {
       const config = JSON.parse(stored);
       if (config.serviceCategories && config.serviceCategories.length > 0) {
-        return config.serviceCategories;
+        // Check if stored categories have items populated
+        const hasItems = config.serviceCategories.some((c: any) => c.items && c.items.length > 0);
+        if (hasItems) {
+          return config.serviceCategories;
+        }
+        // Categories exist but items are empty — build items from services
+        if (config.services && config.services.length > 0) {
+          return buildServiceCategoriesFromServices(config.services);
+        }
       }
       if (config.services && config.services.length > 0) {
         // Group services by category
@@ -1077,17 +1044,14 @@ export default function Home() {
   // Get service categories from config or fallback
   const dynamicServiceCategories = getDynamicServiceCategories();
   const serviceCategories = useMemo(() => {
-    if (dynamicServiceCategories) return dynamicServiceCategories;
+    if (dynamicServiceCategories) {
+      const hasItems = dynamicServiceCategories.some(c => c.items && c.items.length > 0);
+      if (hasItems) return dynamicServiceCategories;
+    }
     if (adminConfig?.services && adminConfig.services.length > 0) {
       return buildServiceCategoriesFromServices(adminConfig.services);
     }
-    return SERVICES_CATEGORIES.map(cat => ({
-      ...cat,
-      items: cat.items.map(item => ({
-        ...item,
-        img: cacheBustUrl(item.img),
-      })),
-    })) || [];
+    return [];
   }, [dynamicServiceCategories, adminConfig]) || [];
 
   // Get hero data from config or fallback
