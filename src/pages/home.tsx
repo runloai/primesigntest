@@ -612,19 +612,17 @@ function ServiceImageGallery({ images, serviceTitle, prefersReducedMotion }: Ser
         <>
           <button
             onClick={goToPrev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/80 z-10"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/80 z-10"
             aria-label="Previous image"
-            style={{ opacity: isHovering ? 1 : undefined }}
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-6 h-6 sm:w-5 sm:h-5" />
           </button>
           <button
             onClick={goToNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/80 z-10"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center hover:opacity-100 focus:opacity-100 transition-opacity duration-200 hover:bg-black/80 z-10"
             aria-label="Next image"
-            style={{ opacity: isHovering ? 1 : undefined }}
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6 sm:w-5 sm:h-5" />
           </button>
         </>
       )}
