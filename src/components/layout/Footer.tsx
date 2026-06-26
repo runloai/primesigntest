@@ -15,10 +15,26 @@ interface ContactConfig {
   mapsUrl?: string;
 }
 
+interface FooterConfig {
+  companyName?: string;
+  tagline?: string;
+  copyright?: string;
+  taglineFooter?: string;
+  showSocialLinks?: boolean;
+  socialLinks?: { platform: string; url?: string; enabled: boolean }[];
+  quickLinks?: { name: string; href: string }[];
+  expertise?: string[];
+}
+
+interface SettingsConfig {
+  logoType?: "image" | "text";
+  logoUrl?: string;
+}
+
 const DEFAULT_CONTACT: ContactConfig = {
   phones: ["+91 6366525253", "+91 8861848284"],
   emails: ["primesign2021@gmail.com"],
-  address: "Bangalore, Karnataka, India",
+  address: "#35, Ramamurthy Nagar Signal, T C Palya Main Road, Bangalore 560016",
   whatsapp: "+91 6366525253",
   youtube: "https://www.youtube.com/@PrimesignBangalore",
   instagram: "https://www.instagram.com/primesignpvtltd/",
@@ -27,31 +43,83 @@ const DEFAULT_CONTACT: ContactConfig = {
   mapsUrl: "https://maps.google.com/?q=Primesign+Ramamurthy+Nagar+Bangalore"
 };
 
-function getContactConfig(): ContactConfig {
-  try {
-    const stored = localStorage.getItem("primesign-config");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return parsed.contact || DEFAULT_CONTACT;
-    }
-  } catch {
-    // Silent fail - contact config not available
-  }
-  return DEFAULT_CONTACT;
-}
+const DEFAULT_FOOTER: FooterConfig = {
+  companyName: "Primesign Private Limited",
+  tagline: "Bangalore's premier signage and branding studio. We build bold, high-impact visual communication that makes your business unforgettable.",
+  copyright: "",
+  taglineFooter: "Built for bold brands.",
+  showSocialLinks: true,
+  socialLinks: [],
+  quickLinks: [
+    { name: "Services", href: "/#services" },
+    { name: "Portfolio", href: "/#portfolio" },
+    { name: "About Us", href: "/#about" },
+    { name: "Why Us", href: "/#why-us" },
+    { name: "Contact", href: "/contact" }
+  ],
+  expertise: [
+    "LED & Neon Signs",
+    "3D Channel Letters",
+    "Acrylic Signage",
+    "Outdoor Hoardings",
+    "Corporate Branding"
+  ]
+};
 
 export default function Footer() {
   const [useTextLogo, setUseTextLogo] = useState(false);
   const [logoSrc, setLogoSrc] = useState("https://raw.githubusercontent.com/runloai/PrimeSign/main/data/logo/logo.webp");
   const [contact, setContact] = useState<ContactConfig>(DEFAULT_CONTACT);
+  const [footer, setFooter] = useState<FooterConfig>(DEFAULT_FOOTER);
   const [location, setLocation] = useLocation();
-  
+
   useEffect(() => {
-    fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
-      if (c.settings?.logoType === "text") setUseTextLogo(true);
-      if (c.settings?.logoUrl) setLogoSrc(c.settings.logoUrl);
-    }).catch(() => {});
-    setContact(getContactConfig());
+    fetch("/config.json?t=" + Date.now())
+      .then(r => r.json())
+      .then(c => {
+        if (c.settings?.logoType === "text") setUseTextLogo(true);
+        if (c.settings?.logoUrl) setLogoSrc(c.settings.logoUrl);
+        
+        // Load footer config
+        const footerConfig = { ...DEFAULT_FOOTER, ...c.footer };
+        
+        // Process copyright with year replacement
+        if (footerConfig.copyright) {
+          const currentYear = new Date().getFullYear();
+          footerConfig.copyright = footerConfig.copyright.replace(/{year}/g, currentYear.toString());
+        }
+        
+        // Merge social links from contact config
+        const socialPlatforms = [
+          { platform: "whatsapp", url: c.contact?.whatsapp || DEFAULT_CONTACT.whatsapp },
+          { platform: "youtube", url: c.contact?.youtube || DEFAULT_CONTACT.youtube },
+          { platform: "instagram", url: c.contact?.instagram || DEFAULT_CONTACT.instagram },
+          { platform: "facebook", url: c.contact?.facebook || DEFAULT_CONTACT.facebook },
+          { platform: "threads", url: c.contact?.threadsUrl || DEFAULT_CONTACT.threadsUrl },
+          { platform: "maps", url: c.contact?.mapsUrl || DEFAULT_CONTACT.mapsUrl }
+        ];
+        
+        if (!footerConfig.socialLinks || footerConfig.socialLinks.length === 0) {
+          footerConfig.socialLinks = socialPlatforms.map(p => ({ ...p, enabled: !!p.url }));
+        } else {
+          // Update social links URLs from contact config
+          footerConfig.socialLinks = footerConfig.socialLinks.map(link => {
+            const platformData = socialPlatforms.find(p => p.platform === link.platform);
+            if (platformData && (!link.url || link.url === "")) {
+              return { ...link, url: platformData.url };
+            }
+            return link;
+          });
+        }
+        
+        setFooter(footerConfig);
+        
+        // Load contact config
+        if (c.contact) {
+          setContact({ ...DEFAULT_CONTACT, ...c.contact });
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const phones = contact.phones?.length ? contact.phones : DEFAULT_CONTACT.phones || [];
@@ -60,25 +128,21 @@ export default function Footer() {
   const handleNavClick = (href: string) => {
     if (href.startsWith("/#")) {
       if (location === "/") {
-        // Already on home page, just scroll
         const element = document.querySelector(href.substring(1));
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
         }
       } else {
-        // On a different page, navigate to home first then scroll
         setLocation(href);
       }
     }
   };
 
-  const quickLinks = [
-    { name: "Services", href: "/#services" },
-    { name: "Portfolio", href: "/#portfolio" },
-    { name: "About Us", href: "/#about" },
-    { name: "Why Us", href: "/#why-us" },
-    { name: "Contact", href: "/contact" },
-  ];
+  const currentYear = new Date().getFullYear();
+  const copyright = footer.copyright || `© ${currentYear} ${footer.companyName || "Primesign Private Limited"}. All rights reserved.`;
+
+  // Get enabled social links
+  const enabledSocialLinks = footer.socialLinks?.filter(link => link.enabled && link.url) || [];
 
   return (
     <footer className="bg-black border-t border-white/10 pt-20 pb-10">
@@ -94,50 +158,42 @@ export default function Footer() {
               <img src={logoSrc} alt="Primesign" className="h-10 w-auto" />
             )}
             <p className="text-muted-foreground font-light leading-relaxed max-w-xs">
-              Bangalore's premier signage and branding studio. We build bold, high-impact visual communication that makes your business unforgettable.
+              {footer.tagline}
             </p>
-            <div className="flex gap-4">
-              {contact.whatsapp && (
-                <a href={`https://wa.me/${contact.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiWhatsapp size={20} aria-label="WhatsApp"/>
-                </a>
-              )}
-              {contact.youtube && (
-                <a href={contact.youtube} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiYoutube size={20} aria-label="YouTube"/>
-                </a>
-              )}
-              {contact.instagram && (
-                <a href={contact.instagram} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiInstagram size={20} aria-label="Instagram"/>
-                </a>
-              )}
-              {contact.facebook && (
-                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiFacebook size={20} aria-label="Facebook"/>
-                </a>
-              )}
-              {contact.threadsUrl && (
-                <a href={contact.threadsUrl} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiThreads size={20} aria-label="Threads"/>
-                </a>
-              )}
-              {contact.mapsUrl && (
-                <a href={contact.mapsUrl} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-                  <SiGooglemaps size={18} aria-label="Google Maps"/>
-                </a>
-              )}
-            </div>
+            {footer.showSocialLinks && enabledSocialLinks.length > 0 && (
+              <div className="flex gap-4">
+                {enabledSocialLinks.map(link => {
+                  const url = link.url || "";
+                  const platform = link.platform;
+                  return (
+                    <a
+                      key={platform}
+                      href={platform === "whatsapp" ? `https://wa.me/${url.replace(/\D/g, '')}` : url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                    >
+                      {platform === "whatsapp" && <SiWhatsapp size={20} aria-label="WhatsApp"/>}
+                      {platform === "youtube" && <SiYoutube size={20} aria-label="YouTube"/>}
+                      {platform === "instagram" && <SiInstagram size={20} aria-label="Instagram"/>}
+                      {platform === "facebook" && <SiFacebook size={20} aria-label="Facebook"/>}
+                      {platform === "threads" && <SiThreads size={20} aria-label="Threads"/>}
+                      {platform === "maps" && <SiGooglemaps size={18} aria-label="Google Maps"/>}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Qualit Links */}
+          {/* Quick Links */}
           <div>
             <h4 className="text-lg font-display font-bold uppercase tracking-wider mb-6">Quick Links</h4>
             <ul className="space-y-4">
-              {quickLinks.map((link) => (
+              {(footer.quickLinks || DEFAULT_FOOTER.quickLinks)!.map((link) => (
                 <li key={link.name}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     onClick={() => handleNavClick(link.href)}
                     className="text-muted-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-sm px-1"
                   >
@@ -148,15 +204,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Services / Expertise */}
           <div>
             <h4 className="text-lg font-display font-bold uppercase tracking-wider mb-6">Expertise</h4>
             <ul className="space-y-4">
-              <li className="text-muted-foreground">LED & Neon Signs</li>
-              <li className="text-muted-foreground">3D Channel Letters</li>
-              <li className="text-muted-foreground">Acrylic Signage</li>
-              <li className="text-muted-foreground">Outdoor Hoardings</li>
-              <li className="text-muted-foreground">Corporate Branding</li>
+              {(footer.expertise || DEFAULT_FOOTER.expertise)!.map((item, idx) => (
+                <li key={idx} className="text-muted-foreground">{item}</li>
+              ))}
             </ul>
           </div>
 
@@ -168,8 +222,8 @@ export default function Footer() {
                 <Phone className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   {phones.map((phone, i) => (
-                    <a key={i} 
-                       href={`tel:${phone.replace(/\s/g, '')}`} 
+                    <a key={i}
+                       href={`tel:${phone.replace(/\s/g, '')}`}
                        className="block hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-sm px-1">
                       {phone}
                     </a>
@@ -180,8 +234,8 @@ export default function Footer() {
                 <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   {emails.map((email, i) => (
-                    <a key={i} 
-                       href={`mailto:${email}`} 
+                    <a key={i}
+                       href={`mailto:${email}`}
                        className="block hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-sm px-1">
                       {email}
                     </a>
@@ -198,10 +252,10 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Primesign Private Limited. All rights reserved.
+            {copyright}
           </p>
           <p className="text-sm text-muted-foreground">
-            Built for bold brands.
+            {footer.taglineFooter}
           </p>
         </div>
       </div>

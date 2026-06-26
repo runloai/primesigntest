@@ -49,6 +49,10 @@ class PublishHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(b"OK")
+        elif self.path == "/" or "." not in self.path.split("/")[-1]:
+            # Serve index.html for all non-file paths (SPA routing)
+            self.path = "/index.html"
+            return super().do_GET()
         else:
             super().do_GET()
 
