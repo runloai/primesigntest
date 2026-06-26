@@ -10,7 +10,6 @@ import { useQuoteModal } from "@/context/QuoteModalContext";
 import { PortfolioImage } from "@/components/ui/image-with-skeleton";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ImageLightbox } from "@/components/ImageLightbox";
-import { SiWhatsapp as WhatsAppIcon } from "react-icons/si";
 
 // Types for admin config
 interface Testimonial {
