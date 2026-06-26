@@ -3,9 +3,6 @@ import { Link, useLocation } from "wouter";
 import { Menu, X, ChevronDown, Clock, Phone, Mail, Facebook, Instagram, Youtube } from "lucide-react";
 import { useQuoteModal } from "@/context/QuoteModalContext";
 
-const WHATSAPP_NUMBER = "916366525253";
-const WHATSAPP_MESSAGE = "Hello%20PrimeSign%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services";
-
 const COLOR_SCHEMES = {
   "Obsidian Gold": { p: "38 95% 55%", s: "190 100% 55%", b: "220 15% 6%", f: "0 0% 98%" },
   "Plasma Purple": { p: "280 95% 60%", s: "45 100% 55%", b: "270 25% 5%", f: "0 0% 98%" },

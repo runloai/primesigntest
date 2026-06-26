@@ -4,9 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ContactPage() {
+  const [config, setConfig] = useState<{ contact?: any; settings?: any } | null>(null);
+
+  useEffect(() => {
+    fetch("/config.json?t=" + Date.now())
+      .then(r => r.json())
+      .then(c => setConfig(c))
+      .catch(() => {});
+  }, []);
+
+  const contact = config?.contact || {};
+  const settings = config?.settings || {};
+
+  const phones = contact.phones || ["+91 6366525253", "+91 8861848284"];
+  const emails = contact.emails || ["primesign2021@gmail.com"];
+  const address = contact.address || "#35, Ramamurthy Nagar Signal, T C Palya Main Road, Bangalore 560016";
+  const mapsUrl = settings.mapsUrl || contact.mapsUrl || "https://maps.google.com/?q=Primesign+Ramamurthy+Nagar+Bangalore";
+  const whatsappNumber = settings.whatsappNumber || contact.whatsapp || phones[0];
+  const workingHours = settings.workingHours || "Monday - Saturday: 9:00 AM - 7:00 PM";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,7 +52,7 @@ export default function ContactPage() {
       file ? `\n*Attachment:* ${file.name}` : null,
     ].filter(Boolean).join("\n");
 
-    const waNumber = "916366525253";
+    const waNumber = (whatsappNumber || "6366525253").replace(/[^\d]/g, '');
     const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines)}`;
     window.open(url, "_blank");
   };
@@ -69,8 +88,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-1">Call / WhatsApp</h3>
-                    <a href="tel:+916366525253" className="block text-xl font-medium hover:text-primary transition-colors">+91 63665 25253</a>
-                    <a href="tel:+918861848284" className="block text-xl font-medium hover:text-primary transition-colors">+91 88618 48284</a>
+                    {phones.map((phone: string, i: number) => (
+                      <a key={i} href={`tel:${phone.replace(/\s/g, '')}`} className="block text-xl font-medium hover:text-primary transition-colors">{phone}</a>
+                    ))}
                   </div>
                 </div>
 
@@ -80,7 +100,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-1">Email Us</h3>
-                    <a href="mailto:primesign2021@gmail.com" className="block text-xl font-medium hover:text-primary transition-colors break-all">primesign2021@gmail.com</a>
+                    {emails.map((email: string, i: number) => (
+                      <a key={i} href={`mailto:${email}`} className="block text-xl font-medium hover:text-primary transition-colors break-all">{email}</a>
+                    ))}
                   </div>
                 </div>
 
@@ -92,8 +114,8 @@ export default function ContactPage() {
                     <h3 className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-1">Our Location</h3>
                     <p className="text-lg font-medium leading-relaxed">
                       Primesign Private Limited<br />
-                      Bangalore, Karnataka, India<br />
-                      <a href="https://g.co/kgs/Usqtga" target="_blank" rel="noopener noreferrer" className="text-primary text-sm uppercase tracking-wider mt-2 inline-block hover:underline">Get Directions &rarr;</a>
+                      {address}<br />
+                      <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="text-primary text-sm uppercase tracking-wider mt-2 inline-block hover:underline">Get Directions &rarr;</a>
                     </p>
                   </div>
                 </div>
@@ -104,7 +126,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm text-muted-foreground uppercase tracking-wider font-bold mb-1">Business Hours</h3>
-                    <p className="text-lg font-medium">Monday - Saturday: 9:00 AM - 7:00 PM</p>
+                    <p className="text-lg font-medium" dangerouslySetInnerHTML={{ __html: workingHours }} />
                   </div>
                 </div>
 
@@ -205,7 +227,7 @@ export default function ContactPage() {
                <div className="text-center p-6 z-10">
                  <MapPin className="w-10 h-10 text-primary mx-auto mb-4" />
                  <h3 className="font-display font-bold text-xl mb-2">View on Google Maps</h3>
-                 <a href="https://g.co/kgs/Usqtga" target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-wider text-muted-foreground hover:text-white transition-colors underline">Click to open map</a>
+                 <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-wider text-muted-foreground hover:text-white transition-colors underline">Click to open map</a>
                </div>
                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors pointer-events-none"></div>
             </div>

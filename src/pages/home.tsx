@@ -46,11 +46,11 @@ interface PortfolioConfig {
 }
 
 // Shared config cache
-let sharedConfig: { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null = null;
+let sharedConfig: { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null = null;
 let sharedConfigFetched = false;
 
 // Helper function to read admin config from localStorage (preview mode)
-function getAdminConfig(): { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null {
+function getAdminConfig(): { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null {
   try {
     // Admin/localStorage config takes priority for preview mode
     const stored = localStorage.getItem("primesign-config");
@@ -67,6 +67,9 @@ function getAdminConfig(): { portfolio?: PortfolioConfig[]; hero?: any; services
         advantageImages: config.advantageImages,
         colorScheme: config.colorScheme,
         serviceCategories: config.serviceCategories,
+        about: config.about,
+        footer: config.footer,
+        navbar: config.navbar,
       };
     }
   } catch (e) {
@@ -76,7 +79,7 @@ function getAdminConfig(): { portfolio?: PortfolioConfig[]; hero?: any; services
 }
 
 // Helper to fetch shared config from config.json (public shared config)
-async function fetchSharedConfig(): Promise<{ portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null> {
+async function fetchSharedConfig(): Promise<{ portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null> {
   if (sharedConfigFetched) return sharedConfig;
   
   try {
@@ -98,6 +101,9 @@ async function fetchSharedConfig(): Promise<{ portfolio?: PortfolioConfig[]; her
         advantageImages: config.advantageImages,
         colorScheme: config.colorScheme,
         serviceCategories: config.serviceCategories,
+        about: config.about,
+        footer: config.footer,
+        navbar: config.navbar,
       };
     }
   } catch (e) {
@@ -109,7 +115,7 @@ async function fetchSharedConfig(): Promise<{ portfolio?: PortfolioConfig[]; her
 }
 
 // Get effective config (localStorage overrides shared config for admin preview)
-async function getEffectiveConfig(): Promise<{ portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null> {
+async function getEffectiveConfig(): Promise<{ portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null> {
   // First fetch the shared config from config.json
   const shared = await fetchSharedConfig();
   // Then check for admin/localStorage override (preview mode)
@@ -119,7 +125,7 @@ async function getEffectiveConfig(): Promise<{ portfolio?: PortfolioConfig[]; he
 }
 
 // Synchronous version for backward compatibility (fallback only)
-function getEffectiveConfigSync(): { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null {
+function getEffectiveConfigSync(): { portfolio?: PortfolioConfig[]; hero?: any; services?: ServiceConfig[]; testimonials?: Testimonial[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null {
   // First try localStorage/admin config (preview)
   const admin = getAdminConfig();
   if (admin) return admin;
@@ -515,7 +521,7 @@ function getDynamicServices(): any[] | null {
               title: s.name,
               desc: s.desc || "",
               images: serviceImages,
-              thumbnail: serviceImages[0] || getServiceImage(s.name),
+              thumbnail: (s as any).heroImage || serviceImages[0] || getServiceImage(s.name),
               tag: s.badge === "popular" ? "Most Popular" : s.badge === "new" ? "New" : null,
               category: getCategoryFromServiceName(s.name),
             };
@@ -590,7 +596,7 @@ function buildServiceCategoriesFromServices(services: ServiceConfig[]): typeof S
     grouped.get(cat)!.items.push({
       name: s.name,
       desc: s.desc || "",
-      img: extractImageUrl(s.images?.[0] as any) || getServiceImage(s.name),
+      img: (s as any).heroImage || extractImageUrl(s.images?.[0] as any) || getServiceImage(s.name),
       badge: s.badge === "popular" ? "Most Popular" : s.badge === "new" ? "New" : s.badge || undefined,
     });
   });
@@ -1073,7 +1079,7 @@ export default function Home() {
     if (stored) { sessionStorage.removeItem("arsenal-category"); return stored; }
     return "sign-boards";
   });
-  const [adminConfig, setAdminConfig] = useState<{ portfolio?: PortfolioConfig[]; hero?: any; testimonials?: Testimonial[]; services?: ServiceConfig[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[] } | null>(null);
+  const [adminConfig, setAdminConfig] = useState<{ portfolio?: PortfolioConfig[]; hero?: any; testimonials?: Testimonial[]; services?: ServiceConfig[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null>(null);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -1118,7 +1124,7 @@ export default function Home() {
     return rawDisplayServices.map((s: any) => ({
       ...s,
       images: s.images || (s.img ? [s.img] : ["/images/led/1.webp"]),
-      thumbnail: s.thumbnail || s.img || (s.images?.[0]) || "/images/led/1.webp",
+      thumbnail: s.heroImage || s.thumbnail || s.img || (s.images?.[0]) || "/images/led/1.webp",
     }));
   }, [rawDisplayServices]);
 
@@ -1152,20 +1158,47 @@ export default function Home() {
 
   // Get portfolio items — curated portfolio items from config.json take priority
   const getPortfolioItems = () => {
+    const allPortfolioItems: { img: string; label: string; cat: string; featured: boolean }[] = [];
+    
     // First: use curated portfolio items from config.json (managed in admin "Portfolio" tab)
     if (adminConfig?.portfolio && adminConfig.portfolio.length > 0) {
       const validPortfolioItems = adminConfig.portfolio.filter((item: PortfolioConfig) => item.url);
-      if (validPortfolioItems.length > 0) {
-        return validPortfolioItems.map((item: PortfolioConfig) => ({
+      validPortfolioItems.forEach((item: PortfolioConfig) => {
+        allPortfolioItems.push({
           img: item.url,
           label: item.label || "Installation",
           cat: item.category || "led",
           featured: item.featured || false,
-        }));
-      }
+        });
+      });
     }
     
-    // Second: build portfolio items from service images (fallback)
+    // Second: add portfolioImages from each service
+    if (adminConfig?.services && adminConfig.services.length > 0) {
+      adminConfig.services.forEach((service: any, serviceIdx: number) => {
+        const portfolioImages = service.portfolioImages || [];
+        const category = service.category || getCategoryFromServiceName(service.name || service.title);
+        
+        portfolioImages.forEach((img: any, imgIdx: number) => {
+          const imgUrl = extractImageUrl(img);
+          if (imgUrl) {
+            allPortfolioItems.push({
+              img: imgUrl,
+              label: img.label || `${service.name || service.title} - Portfolio`,
+              cat: category,
+              featured: serviceIdx === 0 && imgIdx === 0 && allPortfolioItems.length === 0,
+            });
+          }
+        });
+      });
+    }
+    
+    // If we have collected portfolio items, return them
+    if (allPortfolioItems.length > 0) {
+      return allPortfolioItems;
+    }
+    
+    // Third: fallback to service images
     if (displayServices && displayServices.length > 0) {
       const serviceGalleryItems: { img: string; label: string; cat: string; featured: boolean }[] = [];
       
@@ -1191,6 +1224,7 @@ export default function Home() {
       }
     }
     
+    // Final fallback to hardcoded images
     return [
       { img: "/images/portfolio/01.webp", label: "Storefront LED Branding", cat: "led", featured: true },
       { img: "/images/glow/4.webp", label: "Glow Sign", cat: "glow", featured: false },
@@ -1430,12 +1464,14 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: prefersReducedMotion ? 0.01 : 0.8 }}
             >
-              <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">About Primesign</h2>
+              <h2 className="text-sm text-primary font-bold tracking-widest uppercase mb-4">
+                {adminConfig?.about?.title || "About Primesign"}
+              </h2>
               <h3 className="text-4xl md:text-5xl font-display font-bold leading-tight mb-6">
-                BORN IN BANGALORE.<br />BUILT FOR IMPACT.
+                {adminConfig?.about?.subtitle || "BORN IN BANGALORE.\nBUILT FOR IMPACT.".replace(/\n/g, '\n')}
               </h3>
               <p className="text-lg text-muted-foreground font-light leading-relaxed mb-6">
-                {adminConfig?.settings?.aboutDescription || "Founded in 2021, Primesign Private Limited has rapidly become Bangalore's go-to studio for premium signage and architectural branding. We don't just print signs — we engineer visibility."}
+                {adminConfig?.about?.description || adminConfig?.settings?.aboutDescription || "Founded in 2021, Primesign Private Limited has rapidly become Bangalore's go-to studio for premium signage and architectural branding. We don't just print signs — we engineer visibility."}
               </p>
               <p className="text-lg text-muted-foreground font-light leading-relaxed mb-8">
                 We don't just print signs — we engineer visibility. Our obsession with quality

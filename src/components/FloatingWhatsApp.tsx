@@ -2,12 +2,14 @@ import { SiWhatsapp } from "react-icons/si";
 import { useState, useEffect } from "react";
 
 export default function FloatingWhatsApp() {
-  const [waNumber, setWaNumber] = useState("916366525253");
-  const [waMessage, setWaMessage] = useState("Hello PrimeSign, I'd like to know more about your signage services. Can you help me with a quote?");
+  const [waNumber, setWaNumber] = useState("6366525253");
+  const [waMessage, setWaMessage] = useState("Hello PrimeSign, I'd like to know more about your signage services.");
 
   useEffect(() => {
     fetch("/config.json?t=" + Date.now()).then(r => r.json()).then(c => {
-      if (c.contact?.phones?.[0]) setWaNumber(c.contact.phones[0].replace(/[^\d]/g, ''));
+      // Try settings.whatsappNumber first, then fall back to contact.phones[0], then contact.whatsapp
+      const phoneNumber = c.settings?.whatsappNumber || c.contact?.phones?.[0] || c.contact?.whatsapp || "6366525253";
+      setWaNumber(phoneNumber.replace(/[^\d]/g, ''));
       if (c.settings?.whatsappMessage) setWaMessage(c.settings.whatsappMessage);
     }).catch(() => {});
   }, []);
