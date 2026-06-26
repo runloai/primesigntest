@@ -4229,20 +4229,61 @@
     }
 
     function addService() {
+      // Show modal to let user pick category first
+      const categories = getCategories();
+      const categoryOptions = categories.map(cat => `<option value="${cat.id}">${cat.label}</option>`).join('');
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 400px;">
+          <div class="modal-header">
+            <h3>Add New Service</h3>
+            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="field-group">
+              <label class="field-label">Service Name</label>
+              <input type="text" id="newServiceName" class="field-input" placeholder="Enter service name">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Category</label>
+              <select id="newServiceCategory" class="field-select">
+                ${categoryOptions}
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+            <button class="btn btn-cyan" onclick="confirmAddService()">Add Service</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+    
+    function confirmAddService() {
+      const name = document.getElementById('newServiceName').value.trim() || 'New Service';
+      const category = document.getElementById('newServiceCategory').value || 'sign-boards';
+      
       const newId = Math.max(...config.services.map(s => s.id), 0) + 1;
       config.services.push({
         id: newId,
-        name: "New Service",
+        name: name,
         desc: "",
         badge: "",
-        category: "sign-boards",
+        category: category,
         images: [],
         heroImage: null,
         portfolioImages: []
       });
+      
+      // Close modal
+      document.querySelector('.modal-overlay')?.remove();
+      
       renderServices();
       updateSaveIndicator(false);
-      showToast('New service added', 'success');
+      showToast('New service added to ' + category, 'success');
     }
 
     function deleteService(id) {
