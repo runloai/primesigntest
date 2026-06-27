@@ -4242,10 +4242,10 @@
       card.classList.toggle('expanded');
     }
 
-    function addService() {
+    function addService(preSelectedCategory = null) {
       // Show modal to let user pick category first
       const categories = getCategories();
-      const categoryOptions = categories.map(cat => `<option value="${cat.id}">${cat.label}</option>`).join('');
+      const categoryOptions = categories.map(cat => `<option value="${cat.id}" ${preSelectedCategory === cat.id ? 'selected' : ''}>${cat.label}</option>`).join('');
       
       const modal = document.createElement('div');
       modal.className = 'modal-overlay';
@@ -4682,7 +4682,17 @@
       renderCategories();
       renderServices();
       updateSaveIndicator(false);
-      showToast(editIndex !== null ? 'Category updated' : 'Category added', 'success');
+      
+      // After adding new category, prompt to add service
+      if (editIndex === null) {
+        showToast(`Category "${label}" added! Now add a service.`, 'success');
+        // Pre-select this category and show Add Service modal with it
+        setTimeout(() => {
+          addService(id); // Pass category to pre-select
+        }, 500);
+      } else {
+        showToast(editIndex !== null ? 'Category updated' : 'Category added', 'success');
+      }
     }
 
     // ================================================
