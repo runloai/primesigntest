@@ -1641,11 +1641,7 @@ export default function Home() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    {reason.url ? (
-                      <img src={reason.url} alt={reason.label} className="w-8 h-8 shrink-0 mt-0.5 object-contain" />
-                    ) : (
-                      <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5" />
-                    )}
+                    <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5 text-primary" />
                     <span className="font-bold text-lg">{reason.label}</span>
                   </motion.div>
                 ))}
