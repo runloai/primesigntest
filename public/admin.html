@@ -4248,12 +4248,13 @@
       const categoryOptions = categories.map(cat => `<option value="${cat.id}">${cat.label}</option>`).join('');
       
       const modal = document.createElement('div');
-      modal.className = 'modal-overlay';
+      modal.id = 'addServiceModal';
+      modal.className = 'modal-overlay visible';
       modal.innerHTML = `
         <div class="modal-content" style="max-width: 400px;">
           <div class="modal-header">
             <h3>Add New Service</h3>
-            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+            <button class="modal-close" onclick="document.getElementById('addServiceModal')?.remove()">×</button>
           </div>
           <div class="modal-body">
             <div class="field-group">
@@ -4268,7 +4269,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('addServiceModal')?.remove()">Cancel</button>
             <button class="btn btn-cyan" onclick="confirmAddService()">Add Service</button>
           </div>
         </div>
@@ -4293,7 +4294,7 @@
       });
       
       // Close modal
-      document.querySelector('.modal-overlay')?.remove();
+      document.getElementById('addServiceModal')?.remove();
       
       renderServices();
       updateSaveIndicator(false);
