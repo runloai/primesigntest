@@ -448,22 +448,33 @@ function getDynamicServices(): any[] | null {
   return null;
 }
 
-// Build services categories from admin config (preview mode only)
+// Build services categories from server config OR localStorage
+// This ensures categories added in admin show in both navbar AND Arsenal
 function getDynamicServiceCategories(): ServiceCategory[] | null {
   try {
+    // First check localStorage (will have latest from admin save)
     const stored = localStorage.getItem("primesign-config");
     if (stored) {
       const config = JSON.parse(stored);
-      // FIXED: Always rebuild from services to pick up new categories added in admin
-      // This ensures when you add a category + service in admin, it shows in both navbar AND Arsenal
       if (config.services && config.services.length > 0) {
         return buildServiceCategoriesFromServices(config.services);
       }
+    }
+    
+    // Also check server config via cached fetch if available
+    // Use a global cache that gets updated when config loads
+    if ((window as any)._serverServiceCategories) {
+      return (window as any)._serverServiceCategories;
     }
   } catch (e) {
     // Silent fail
   }
   return null;
+}
+
+// Call this after config loads to cache server categories globally
+function cacheServerCategories(services: ServiceConfig[]) {
+  (window as any)._serverServiceCategories = buildServiceCategoriesFromServices(services);
 }
 
 // Category display names and descriptions
@@ -1031,10 +1042,11 @@ export default function Home() {
   // Get service categories from config or fallback
   const dynamicServiceCategories = getDynamicServiceCategories();
   const serviceCategories = useMemo(() => {
-    if (Array.isArray(dynamicServiceCategories)) {
-      const hasItems = dynamicServiceCategories.some(c => c.items && Array.isArray(c.items) && c.items.length > 0);
-      if (hasItems) return dynamicServiceCategories;
+    // Use dynamic categories if available (includes ALL categories, even with 0 items)
+    if (Array.isArray(dynamicServiceCategories) && dynamicServiceCategories.length > 0) {
+      return dynamicServiceCategories;
     }
+    // Fallback to building from adminConfig services
     if (adminConfig?.services && adminConfig.services.length > 0) {
       return buildServiceCategoriesFromServices(adminConfig.services);
     }

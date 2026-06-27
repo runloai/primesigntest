@@ -577,6 +577,14 @@
           "label": "Quick Printing - Image 4"
         }
       ]
+    },
+    {
+      "id": 18,
+      "name": "My New Service",
+      "desc": "",
+      "category": "",
+      "images": [],
+      "badge": ""
     }
   ],
   "portfolio": [
@@ -767,7 +775,7 @@
           "name": "LED Signs",
           "desc": "High-brightness LED boards with ACP backing and 3D letters",
           "badge": "popular",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/led/1.webp",
@@ -796,7 +804,7 @@
           "name": "Glow Signs",
           "desc": "Illuminated glow signs visible day and night",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/glow/1.webp",
@@ -845,7 +853,7 @@
           "name": "Acrylic Signs",
           "desc": "Laser-cut precision acrylic signs for corporate and retail",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/acrylic-1.png",
@@ -878,7 +886,7 @@
           "name": "Wall Branding",
           "desc": "Custom vinyl graphics and murals for interior and exterior walls",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/wall-1.jpg",
@@ -931,7 +939,7 @@
           "name": "Vehicle Wraps",
           "desc": "Full and partial vehicle wraps for mobile advertising",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/vehicle-1.jpg",
@@ -984,7 +992,7 @@
           "name": "PVC & Flex",
           "desc": "Durable outdoor flex printing for hoardings and banners",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/pvc-ss-1.png",
@@ -1013,7 +1021,7 @@
           "name": "PVC/SS Letter Sign",
           "desc": "PVC and stainless steel letter signs for modern corporate branding",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/pvc-ss-4.png",
@@ -1042,7 +1050,7 @@
           "name": "Non-Light Sign Board",
           "desc": "Non-illuminated sign boards for daytime visibility and cost-effective branding",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/nonlight-1.png",
@@ -1063,7 +1071,7 @@
           "name": "Hoardings",
           "desc": "Large-format outdoor hoardings for maximum brand visibility",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/hoardings-1.png",
@@ -1096,7 +1104,7 @@
           "name": "One Way Vision",
           "desc": "Perforated window films for see-through branding on glass surfaces",
           "badge": "",
-          "heroImage": null,
+          "category": "sign-boards",
           "images": [
             {
               "url": "/images/services/sign-boards/house-1.png",
@@ -1133,7 +1141,7 @@
           "name": "Promotional Tents",
           "desc": "Custom branded promotional tents for events and outdoor campaigns",
           "badge": "",
-          "heroImage": null,
+          "category": "promotional",
           "images": [
             {
               "url": "/images/services/promotional/tent-1.png",
@@ -1158,7 +1166,7 @@
           "name": "Roll Up Standees",
           "desc": "Portable roll-up banner stands for indoor events and promotions",
           "badge": "",
-          "heroImage": null,
+          "category": "promotional",
           "images": [
             {
               "url": "/images/services/promotional/rollup-1.png",
@@ -1187,7 +1195,7 @@
           "name": "Posters",
           "desc": "High-quality poster printing for indoor and outdoor advertising",
           "badge": "",
-          "heroImage": null,
+          "category": "digital",
           "images": [
             {
               "url": "/images/square/1.webp",
@@ -1216,7 +1224,7 @@
           "name": "Visiting Cards",
           "desc": "Premium visiting card printing on multiple paper stocks and finishes",
           "badge": "",
-          "heroImage": null,
+          "category": "digital",
           "images": [
             {
               "url": "/images/square/brass.webp",
@@ -1241,7 +1249,7 @@
           "name": "ID Cards",
           "desc": "Custom ID card printing with lamination and accessories",
           "badge": "",
-          "heroImage": null,
+          "category": "digital",
           "images": [
             {
               "url": "/images/portfolio/01.webp",
@@ -1266,7 +1274,7 @@
           "name": "T-Shirts",
           "desc": "Custom t-shirt printing with screen and DTF transfer methods",
           "badge": "",
-          "heroImage": null,
+          "category": "digital",
           "images": [
             {
               "url": "/images/portfolio/06.webp",
@@ -1291,7 +1299,7 @@
           "name": "Quick Printing",
           "desc": "Fast turnaround digital printing for brochures, flyers and documents",
           "badge": "",
-          "heroImage": null,
+          "category": "digital",
           "images": [
             {
               "url": "/images/portfolio/005.webp",
@@ -1317,6 +1325,20 @@
       "id": "tst",
       "label": "TST",
       "icon": "\ud83d\udce6",
+      "description": "",
+      "items": []
+    },
+    {
+      "id": "my NEW-category",
+      "label": "MY NEW CATEGORY",
+      "icon": "\ud83d\udcc1",
+      "description": "",
+      "items": []
+    },
+    {
+      "id": "debug-test",
+      "label": "DEBUG TEST",
+      "icon": "\ud83d\udcc1",
       "description": "",
       "items": []
     }
