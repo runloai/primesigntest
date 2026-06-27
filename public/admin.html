@@ -5942,6 +5942,14 @@
     });
 
     // ================================================
+    // EXPOSE FUNCTIONS TO WINDOW (for onclick handlers)
+    // ================================================
+    window.addService = addService;
+    window.confirmAddService = confirmAddService;
+    window.addCategory = addCategory;
+    window.confirmAddCategory = confirmAddCategory;
+
+    // ================================================
     // ASYNC INITIALIZATION - Loads config.json as PRIMARY source
     // ================================================
     (async function initAdmin() {
