@@ -5898,6 +5898,17 @@
         showDashboard();
       }
     })().catch(e => console.error('Admin init error:', e));
+    
+    // Expose critical functions to window for inline onclick handlers
+    window.addService = addService;
+    window.addCategory = addCategory;
+    window.renderServices = renderServices;
+    window.saveConfig = saveConfig;
+    window.switchTab = switchTab;
+    window.doLogin = doLogin;
+    window.deleteCategory = deleteCategory;
+    window.deleteService = deleteService;
+    window.editCategory = editCategory;
   </script>
 </body>
 </html>
