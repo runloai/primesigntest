@@ -3254,7 +3254,15 @@
         console.warn('Admin: Could not merge localStorage draft', e);
       }
 
-      // Step 4: Persist merged config to localStorage
+      // Step 4: Ensure top-level arrays exist for website compatibility
+      if (!configData.aboutImages && configData.about?.images) {
+        configData.aboutImages = configData.about.images.map(i => ({ url: i.url, label: i.label }));
+      }
+      if (!configData.advantageImages && configData.advantage?.images) {
+        configData.advantageImages = configData.advantage.images.map(i => ({ url: i.url, label: i.label }));
+      }
+
+      // Persist merged config to localStorage
       config = configData;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
       return config;
@@ -3279,6 +3287,10 @@
     async function saveConfig() {
       showSaveProgress('saving');
       await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Sync top-level arrays for website compatibility
+      config.aboutImages = (config.about?.images || []).map(i => ({ url: i.url, label: i.label }));
+      config.advantageImages = (config.advantage?.images || []).map(i => ({ url: i.url, label: i.label }));
       
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
@@ -3667,6 +3679,8 @@
     // Auto-save interval (start once, not per populateAllFields call)
     if (!window._psAutoSaveInterval) {
       window._psAutoSaveInterval = setInterval(() => {
+        config.aboutImages = (config.about?.images || []).map(i => ({ url: i.url, label: i.label }));
+        config.advantageImages = (config.advantage?.images || []).map(i => ({ url: i.url, label: i.label }));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
       }, 30000);
     }
