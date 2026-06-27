@@ -11,6 +11,14 @@ import { useQuoteModal } from "@/context/QuoteModalContext";
 import { PortfolioImage } from "@/components/ui/image-with-skeleton";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ImageLightbox } from "@/components/ImageLightbox";
+import { 
+  loadSiteConfig, 
+  getServicesByCategory, 
+  imageUrl,
+  type SiteConfig,
+  type Service as ConfigService,
+  type ServiceCategory
+} from "@/lib/site-config";
 
 // Types for admin config
 interface Testimonial {
@@ -991,21 +999,21 @@ export default function Home() {
     if (stored) { sessionStorage.removeItem("arsenal-category"); return stored; }
     return "sign-boards";
   });
+  // Single source of truth: use normalized config
+  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
   const [adminConfig, setAdminConfig] = useState<{ portfolio?: PortfolioConfig[]; hero?: any; testimonials?: Testimonial[]; services?: ServiceConfig[]; contact?: any; settings?: any; aboutImages?: any[]; advantageImages?: any[]; colorScheme?: any; serviceCategories?: any[]; about?: any; footer?: any; navbar?: any } | null>(null);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
-  // Load config from localStorage (preview) or config.json (shared) on mount
+  // Load config using new shared loader
   useEffect(() => {
-    const loadConfig = async () => {
-      const config = await getEffectiveConfig();
-      if (config) {
-        setAdminConfig(config);
-      }
-    };
-    loadConfig();
+    loadSiteConfig({ includeLocalDraft: true }).then(config => {
+      setSiteConfig(config);
+      // Also set adminConfig for backward compatibility with other sections
+      setAdminConfig(config as any);
+    });
   }, []);
 
   // Listen for navbar dropdown category changes + specific service scroll
@@ -1040,19 +1048,29 @@ export default function Home() {
     }));
   }, [rawDisplayServices]);
 
-  // Get service categories from config or fallback
-  const dynamicServiceCategories = getDynamicServiceCategories();
+  // Get service categories - use new normalized config if available
   const serviceCategories = useMemo(() => {
-    // Use dynamic categories if available (includes ALL categories, even with 0 items)
+    // Use normalized config from shared loader
+    if (siteConfig) {
+      return getServicesByCategory(siteConfig).map(({ category, services }) => ({
+        id: category.id,
+        label: category.label,
+        description: category.description,
+        icon: category.icon,
+        items: services,
+      }));
+    }
+    // Fallback to dynamic categories if available (legacy)
+    const dynamicServiceCategories = getDynamicServiceCategories();
     if (Array.isArray(dynamicServiceCategories) && dynamicServiceCategories.length > 0) {
       return dynamicServiceCategories;
     }
-    // Fallback to building from adminConfig services
+    // Final fallback: building from adminConfig services
     if (adminConfig?.services && adminConfig.services.length > 0) {
       return buildServiceCategoriesFromServices(adminConfig.services);
     }
     return [];
-  }, [dynamicServiceCategories, adminConfig]) || [];
+  }, [siteConfig, adminConfig]) || [];
 
   // Get hero data from config or fallback
   const heroBgImage = adminConfig?.hero?.bgImage || "/images/portfolio/01.webp";
