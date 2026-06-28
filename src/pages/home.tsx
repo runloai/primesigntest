@@ -1011,7 +1011,7 @@ export default function Home() {
 
   // Load config using new shared loader
   useEffect(() => {
-    loadSiteConfig({ includeLocalDraft: true }).then(config => {
+    loadSiteConfig({ includeLocalDraft: false }).then(config => {
       setSiteConfig(config);
       // Also set adminConfig for backward compatibility with other sections
       setAdminConfig(config as any);
@@ -1041,9 +1041,8 @@ export default function Home() {
   }, []);
 
   const serviceCategories = useMemo<ServiceCategory[]>(() => {
-    if (siteConfig?.services?.length) {
+    if (siteConfig?.serviceCategories?.length) {
       return getServicesByCategory(siteConfig)
-        .filter(({ services }) => services.length > 0)
         .map(({ category, services }) => ({
           id: category.id,
           label: category.label,
@@ -1216,15 +1215,6 @@ export default function Home() {
     : adminConfig?.advantageImages && adminConfig.advantageImages.length >= 6
       ? adminConfig.advantageImages.slice(0, 6)
       : reasons.map((label) => ({ label, url: "" }));
-
-  const advantageImages = displayReasons.map((r: any) => (typeof r === 'string' ? r : r?.url || "")).filter(Boolean);
-  
-  // Use gridImages from config if available
-  const advantageGridImages = siteConfig?.advantage?.gridImages?.length
-    ? siteConfig.advantage.gridImages.map((img) => imageUrl(img)).filter(Boolean).slice(0, 4)
-    : adminConfig?.advantage?.gridImages && adminConfig.advantage.gridImages.length >= 4
-      ? adminConfig.advantage.gridImages.slice(0, 4).map((img: any) => imageUrl(img)).filter(Boolean)
-    : ["/images/glow/6.webp", "/images/wall/5.webp", "/images/led/3.webp", "/images/square/resto-square.webp"];
 
   const portfolioCategories = useMemo(() => {
     const categories: string[] = [];
@@ -1561,6 +1551,12 @@ export default function Home() {
               </motion.div>
             );
             })}
+            {currentServiceCount === 0 && (
+              <div className="col-span-full rounded-xl border border-white/10 bg-card/70 p-10 text-center">
+                <p className="text-lg font-display font-bold text-white">No services added here yet.</p>
+                <p className="mt-2 text-muted-foreground">Add services to this category from the admin panel and they will appear here automatically.</p>
+              </div>
+            )}
           </motion.div>
 
           {/* View All CTA */}
@@ -1666,47 +1662,39 @@ export default function Home() {
 
       {/* ============ WHY CHOOSE US / ADVANTAGES ============ */}
       <section id="why-us" className="py-24 bg-card text-card-foreground relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-50" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(240,168,48,0.18),transparent_42%,rgba(255,255,255,0.08))]" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-sm font-bold tracking-widest uppercase mb-4 text-white/80">The Primesign Advantage</h2>
-              <h3 className="text-4xl md:text-6xl font-display font-bold leading-tight mb-8">
-                ENGINEERED FOR EXCELLENCE.
-              </h3>
-              <p className="text-xl font-light leading-relaxed mb-10 text-white/90">
-                In a crowded city like Bangalore, standing out requires more than just a bright light.
-                It requires structural integrity, flawless design, and reliable execution.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-6">
-                {displayReasons.map((reason: any, i: number) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-start gap-3"
-                  >
-                    <CheckCircle2 className="w-6 h-6 shrink-0 mt-0.5 text-primary" />
-                    <span className="font-bold text-lg">{reason.label}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+          <div className="mx-auto max-w-3xl text-center mb-14">
+            <h2 className="text-sm font-bold tracking-widest uppercase mb-4 text-white/80">The Primesign Advantage</h2>
+            <h3 className="text-4xl md:text-6xl font-display font-bold leading-tight mb-6">
+              ENGINEERED FOR EXCELLENCE.
+            </h3>
+            <p className="text-lg md:text-xl font-light leading-relaxed text-white/90">
+              In a crowded city like Bangalore, standing out requires more than a bright light. It takes structural integrity, disciplined fabrication, and reliable execution from start to finish.
+            </p>
+          </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {advantageGridImages.map((src: string, i: number) => (
-                <div key={i} className="aspect-square rounded-xl overflow-hidden">
-                  <img 
-                    src={src} 
-                    alt={`Primesign quality work sample ${i + 1}`} 
-                    loading="lazy"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
-                  />
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {displayReasons.map((reason: any, i: number) => (
+              <motion.div
+                key={reason.label || i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="min-h-[150px] rounded-xl border border-white/10 bg-background/55 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)]"
+              >
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="grid h-12 w-12 place-items-center rounded-lg bg-primary text-xl text-primary-foreground">
+                    {reason.icon || <CheckCircle2 className="h-6 w-6" />}
+                  </div>
+                  <span className="text-sm font-bold text-white/35">{String(i + 1).padStart(2, "0")}</span>
                 </div>
-              ))}
-            </div>
+                <h4 className="text-xl font-display font-bold leading-snug text-white">
+                  {reason.label}
+                </h4>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

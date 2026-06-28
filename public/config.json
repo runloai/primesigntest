@@ -739,54 +739,66 @@
     "images": [
       {
         "url": "/images/glow/1.webp",
-        "label": "Premium Quality Materials"
+        "label": "Premium Quality Materials",
+        "icon": "🏆"
       },
       {
         "url": "/images/acrylic/1.webp",
-        "label": "Rapid Turnaround Times"
+        "label": "Rapid Turnaround Times",
+        "icon": "⚡"
       },
       {
         "url": "/images/wall/1.webp",
-        "label": "Expert Installation Team"
+        "label": "Expert Installation Team",
+        "icon": "👥"
       },
       {
         "url": "/images/vehicle/1.webp",
-        "label": "End-to-End Service"
+        "label": "End-to-End Service",
+        "icon": "🔄"
       },
       {
         "url": "/images/pvc/1.webp",
-        "label": "Competitive Pricing"
+        "label": "Competitive Pricing",
+        "icon": "💰"
       },
       {
         "url": "/images/led/1.webp",
-        "label": "Bangalore-Based Manufacturing"
+        "label": "Bangalore-Based Manufacturing",
+        "icon": "🏭"
       }
     ]
   },
   "advantageImages": [
     {
       "url": "/images/glow/1.webp",
-      "label": "Premium Quality Materials"
+      "label": "Premium Quality Materials",
+      "icon": "🏆"
     },
     {
       "url": "/images/acrylic/1.webp",
-      "label": "Rapid Turnaround Times"
+      "label": "Rapid Turnaround Times",
+      "icon": "⚡"
     },
     {
       "url": "/images/wall/1.webp",
-      "label": "Expert Installation Team"
+      "label": "Expert Installation Team",
+      "icon": "👥"
     },
     {
       "url": "/images/vehicle/1.webp",
-      "label": "End-to-End Service"
+      "label": "End-to-End Service",
+      "icon": "🔄"
     },
     {
       "url": "/images/pvc/1.webp",
-      "label": "Competitive Pricing"
+      "label": "Competitive Pricing",
+      "icon": "💰"
     },
     {
       "url": "/images/led/1.webp",
-      "label": "Bangalore-Based Manufacturing"
+      "label": "Bangalore-Based Manufacturing",
+      "icon": "🏭"
     }
   ],
   "serviceCategories": [
@@ -807,30 +819,6 @@
       "label": "DIGITAL PRINTS",
       "icon": "🖨️",
       "description": "High-quality digital printing on various media"
-    },
-    {
-      "id": "tst",
-      "label": "TST",
-      "icon": "📦",
-      "description": ""
-    },
-    {
-      "id": "my-new-category",
-      "label": "MY NEW CATEGORY",
-      "icon": "📁",
-      "description": ""
-    },
-    {
-      "id": "debug-test",
-      "label": "DEBUG TEST",
-      "icon": "📁",
-      "description": ""
-    },
-    {
-      "id": "other",
-      "label": "Other",
-      "icon": "📦",
-      "description": ""
     }
   ],
   "settings": {

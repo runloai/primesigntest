@@ -104,7 +104,7 @@ export default function Navbar() {
   const [workingHours, setWorkingHours] = useState("Mon-Sat: 9:00 AM - 7:00 PM<br>Sunday: Closed");
 
   useEffect(() => {
-    loadSiteConfig({ includeLocalDraft: true }).then((c) => {
+    loadSiteConfig({ includeLocalDraft: false }).then((c) => {
       setUseTextLogo(c.settings?.logoType === "text");
       const logo = imageUrl(c.settings?.logo, c.settings?.logoUrl);
       if (logo) setLogoSrc(logo);
@@ -122,16 +122,22 @@ export default function Navbar() {
       }
 
       const grouped: Record<string, DropdownMenuItem[]> = {};
-      const categories = getServicesByCategory(c).filter(({ services }) => services.length > 0);
+      const categories = getServicesByCategory(c);
       setServiceCategories(categories.map(({ category }) => ({ id: category.id, label: category.label })));
 
       categories.forEach(({ category, services }) => {
-        grouped[category.label] = services.map((service) => ({
-          name: service.name,
-          href: "/#services",
-          filter: category.id,
-          serviceId: service.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
-        }));
+        grouped[category.label] = services.length > 0
+          ? services.map((service) => ({
+              name: service.name,
+              href: "/#services",
+              filter: category.id,
+              serviceId: service.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, ''),
+            }))
+          : [{
+              name: `View ${category.label}`,
+              href: "/#services",
+              filter: category.id,
+            }];
       });
 
       setServiceMenu(grouped);
